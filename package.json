@@ -2,7 +2,7 @@
   "name": "cardtable",
   "version": "1.0.0",
   "description": "Play any card or board game with your friends",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
