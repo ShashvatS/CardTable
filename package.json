@@ -1,0 +1,30 @@
+{
+  "name": "cardtable",
+  "version": "1.0.0",
+  "description": "Play any card or board game with your friends",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShashvatS/CardTable.git"
+  },
+  "keywords": [
+    "games",
+    "card",
+    "games",
+    "board",
+    "games",
+    "NodeJS",
+    "Express",
+    "SocketIO",
+    "WebRTC"
+  ],
+  "author": "Shashvat Srivastava",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShashvatS/CardTable/issues"
+  },
+  "homepage": "https://github.com/ShashvatS/CardTable#readme"
+}
