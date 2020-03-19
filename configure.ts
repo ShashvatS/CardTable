@@ -1,0 +1,78 @@
+import express = require('express');
+
+import bodyParser = require('body-parser');
+import cookieParser = require('cookie-parser');
+
+import util = require("./util");
+import { v4 as uuid } from 'uuid';
+
+import react from "./routes/react";
+
+export function library_middleware(app: express.Application) {
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
+    app.use(cookieParser());
+}
+
+export function set_properties(app: express.Application) {
+    app.set('port', process.env.PORT || 5000);
+
+    const env = process.env.NODE_ENV;
+    if (env !== "production" && env !== "devlopment") {
+        throw Error("process.env.NODE_ENV not set properly");
+    }
+
+    app.set('env', process.env.NODE_ENV);
+}
+
+export function redirect_https(app: express.Application) {
+    app.enable('trust proxy');
+
+    if (app.get('env') === "production") {
+        app.use((req: express.Request, res: express.Response, next) => {
+            if (req.header('x-forwarded-proto') !== 'https') {
+                res.redirect('https://' + req.header('host') + req.url);
+            }
+            else next();
+        });
+    }
+}
+
+//set client id cookie before serving any resources
+export function set_cookies(app: express.Application) {
+    app.get('/*', (req: express.Request, res: express.Response, next) => {
+        if (req.cookies.clientid === undefined) {
+            res.cookie(util.client_id_cookie, uuid());
+        }
+
+        next();
+    });
+}
+
+export function handle_errors(app: express.Application) {
+    // development error handler
+    // will print stacktrace
+    if (app.get('env') === 'development') {
+        app.use((err: any, req, res, next) => {
+            res.status(err['status'] || 500);
+            res.render('error', {
+                message: err.message,
+                error: err
+            });
+        });
+    }
+
+    // production error handler
+    // no stacktraces leaked to user
+    app.use((err: any, req, res, next) => {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: {}
+        });
+    });
+}
+
+export function serve_react(app: express.Application) {
+    app.use('/', react);
+}
