@@ -1,11 +1,15 @@
 import React from "react";
-import { AppBar } from '@material-ui/core';
+
+import MainMenu from "./components/MainMenu";
+import { NavTabPanels } from "./components/MainTabs";
 
 function App() {
+  let [tabValue, setTabValue] = React.useState(0);
   return (
-    <AppBar>
-
-    </AppBar>
+    <React.Fragment>
+      <MainMenu value={tabValue} setValue={setTabValue} />
+      <NavTabPanels value={tabValue} />
+    </React.Fragment>
   );
 }
 
