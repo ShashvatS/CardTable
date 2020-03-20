@@ -10,15 +10,16 @@ module.exports = function (app) {
     app.use(proxy.createProxyMiddleware('/socket.io',
         {
             target: 'http://localhost:5000/',
-            ws: true
+            ws: true,
+            changeOrigin: true
         }));
 
-    // app.use(proxy.createProxyMiddleware('/peerjs',
-    //     {
-    //         target: 'http://localhost:5000/',
-    //         ws: true
-    //     }
-    // ));
+    app.use(proxy.createProxyMiddleware('/peerjs',
+        {
+            target: 'http://localhost:5000/peerjs',
+            ws: true
+        }
+    ));
 
 
 }

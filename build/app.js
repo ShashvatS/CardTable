@@ -6,7 +6,6 @@ var http = require("http");
 var sio = require("socket.io");
 var configure_1 = require("./configure");
 var signal_1 = require("./signal");
-var peer_1 = require("peer");
 var app = express();
 var server = http.createServer(app);
 var io = sio(server);
@@ -22,12 +21,6 @@ signal_1.signaling_protocol(io);
 app.get('/api/helloworld', function (req, res) {
     res.json({ hello: "world" });
 });
-var peerServer = peer_1.ExpressPeerServer(server, {
-    debug: app.get('env') === "development",
-    path: '/peerjs',
-    proxied: app.get('env') === "development"
-});
-app.use('/peerjs', peerServer);
 server.listen(app.get('port'), function () {
     console.log('Express server listening on port ', server.address());
 });
