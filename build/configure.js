@@ -2,9 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
+var path = require("path");
 var util = require("./util");
 var uuid_1 = require("uuid");
 var react_1 = require("./routes/react");
+var gamecode_1 = require("./routes/gamecode");
 function library_middleware(app) {
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
@@ -20,6 +22,11 @@ function set_properties(app) {
     app.set('env', process.env.NODE_ENV);
 }
 exports.set_properties = set_properties;
+function view_enine(app) {
+    app.set('views', path.join(__dirname, "..", 'views'));
+    app.set('view engine', 'pug');
+}
+exports.view_enine = view_enine;
 function redirect_https(app) {
     app.enable('trust proxy');
     if (app.get('env') === "production") {
@@ -51,7 +58,7 @@ function handle_errors(app) {
             res.status(err['status'] || 500);
             res.render('error', {
                 message: err.message,
-                error: err
+                error: {}
             });
         });
     }
@@ -70,4 +77,8 @@ function serve_react(app) {
     app.use('/', react_1.default);
 }
 exports.serve_react = serve_react;
+function handle_gamecode_creation(app) {
+    app.use('/api', gamecode_1.default);
+}
+exports.handle_gamecode_creation = handle_gamecode_creation;
 //# sourceMappingURL=configure.js.map

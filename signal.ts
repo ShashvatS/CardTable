@@ -20,11 +20,11 @@ export function signaling_protocol(io: SocketIO.Server) {
         });
 
         socket.on("call-user", (data) => {
-            if (!data || data.to == null || data.offer == null) return;
+            if (!data || data.to == null || data.client_id == null) return;
 
             socket.to(data.to).emit("call-made", {
-                offer: data.offer,
-                from: socket.id
+                from: socket.id,
+                client_id: data.client_id
             });
         });
     });

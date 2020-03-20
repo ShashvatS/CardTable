@@ -3,10 +3,13 @@ import express = require('express');
 import bodyParser = require('body-parser');
 import cookieParser = require('cookie-parser');
 
+import path = require("path");
+
 import util = require("./util");
 import { v4 as uuid } from 'uuid';
 
 import react from "./routes/react";
+import gamecode_route from "./routes/gamecode";
 
 export function library_middleware(app: express.Application) {
     app.use(bodyParser.urlencoded({ extended: true }));
@@ -18,11 +21,16 @@ export function set_properties(app: express.Application) {
     app.set('port', process.env.PORT || 5000);
 
     const env = process.env.NODE_ENV;
-    if (env !== "production" && env !== "devlopment") {
+    if (env !== "production" && env !== "development") {
         throw Error("process.env.NODE_ENV not set properly");
     }
 
     app.set('env', process.env.NODE_ENV);
+}
+
+export function view_enine(app: express.Application) {
+    app.set('views', path.join(__dirname, "..", 'views'));
+    app.set('view engine', 'pug');
 }
 
 export function redirect_https(app: express.Application) {
@@ -57,7 +65,7 @@ export function handle_errors(app: express.Application) {
             res.status(err['status'] || 500);
             res.render('error', {
                 message: err.message,
-                error: err
+                error: {}
             });
         });
     }
@@ -75,4 +83,8 @@ export function handle_errors(app: express.Application) {
 
 export function serve_react(app: express.Application) {
     app.use('/', react);
+}
+
+export function handle_gamecode_creation(app: express.Application) {
+    app.use('/api', gamecode_route);
 }

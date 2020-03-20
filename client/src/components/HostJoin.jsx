@@ -1,11 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from '@material-ui/core/Container';
+import Container from "@material-ui/core/Container";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import Host from "./Host";
+import Join from "./Join";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -37,15 +38,7 @@ function a11yProps(index) {
   };
 }
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper
-  }
-}));
-
 export default function HostJoin() {
-  const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -53,26 +46,26 @@ export default function HostJoin() {
   };
 
   return (
-    <div className={classes.root}>
-      <Container position="static" width="auto">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="hostjoin tabs example"
-          indicatorColor="primary"
-          textColor="primary"
-          centered
-        >
-          <Tab label="Host" {...a11yProps(0)} />
-          <Tab label="Join" {...a11yProps(1)} />
-        </Tabs>
-      </Container>
+    <Container position="static" width="auto">
+    <div>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        aria-label="hostjoin tabs example"
+        indicatorColor="primary"
+        textColor="primary"
+        centered
+      >
+        <Tab label="Host" {...a11yProps(0)} />
+        <Tab label="Join" {...a11yProps(1)} />
+      </Tabs>
       <TabPanel value={value} index={0}>
-        Host
+        <Host />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Join
+        <Join />
       </TabPanel>
     </div>
+  </Container>
   );
 }

@@ -18,11 +18,11 @@ function signaling_protocol(io) {
             });
         });
         socket.on("call-user", function (data) {
-            if (!data || data.to == null || data.offer == null)
+            if (!data || data.to == null || data.client_id == null)
                 return;
             socket.to(data.to).emit("call-made", {
-                offer: data.offer,
-                from: socket.id
+                from: socket.id,
+                client_id: data.client_id
             });
         });
     });
