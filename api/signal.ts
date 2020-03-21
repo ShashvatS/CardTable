@@ -5,12 +5,6 @@ const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH);
 //handle signaling protocol for webrtc connections
 export function signaling_protocol(io: SocketIO.Server) {
     io.on('connection', (socket: SocketIO.Socket) => {
-        socket.on("get-id", (_ignore) => {
-            socket.emit("get-id", {
-                id: socket.id
-            });
-        });
-
         socket.on("request-access-token", (_ignore) => {
             //TODO: limit how many tokens they can create
             //this can be done by adding captchas into the process later on
@@ -19,13 +13,17 @@ export function signaling_protocol(io: SocketIO.Server) {
             });
         });
 
-        socket.on("call-user", (data) => {
-            if (!data || data.to == null || data.client_id == null) return;
+        socket.on("signal-user", (data) => {
+            if (!data || data.to == null) return;
+            let to = data.to;
+            delete data.to;
+            data.from = socket.id;
 
-            socket.to(data.to).emit("call-made", {
-                from: socket.id,
-                client_id: data.client_id
-            });
+            //TODO: delete later
+            console.log("signaling user");
+            console.log(data);
+
+            io.to(to).emit("signal-from-user", data);
         });
     });
 }

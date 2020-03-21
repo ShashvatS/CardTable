@@ -3,7 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button/Button";
 import Input from "@material-ui/core/Input";
 
-import { connect_to_host, get_is_host } from "../scripts/connections";
+import { get_is_host } from "../scripts/webrtc/webrtc";
+import { connect_to_host, test_send } from "../scripts/webrtc/follower";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -27,7 +28,7 @@ export default function Join() {
   }
 
   async function join() {
-    if (get_is_host() == true) {
+    if (get_is_host() === true) {
       console.log("Already the host of a game!\n");
       return;
     }
@@ -70,6 +71,19 @@ export default function Join() {
           onClick={join}
         >
           Join
+        </Button>
+      </div>
+
+      <div>
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          onClick={() => {test_send({
+            hello: "world"
+          })}}
+        >
+          Test Message
         </Button>
       </div>
     </React.Fragment>

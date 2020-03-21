@@ -3,10 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
 var path = require("path");
-var util = require("./util");
 var uuid_1 = require("uuid");
 var react_1 = require("./routes/react");
-var gamecode_1 = require("./routes/gamecode");
+var gamecode_1 = require("./api/gamecode");
 function library_middleware(app) {
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
@@ -40,11 +39,14 @@ function redirect_https(app) {
     }
 }
 exports.redirect_https = redirect_https;
+exports.client_id_cookie = "clientid";
 //set client id cookie before serving any resources
 function set_cookies(app) {
     app.get('/*', function (req, res, next) {
         if (req.cookies.clientid === undefined) {
-            res.cookie(util.client_id_cookie, uuid_1.v4());
+            res.cookie(exports.client_id_cookie, uuid_1.v4(), {
+                maxAge: 24 * 60 * 60 * 1000 // 24 hours
+            });
         }
         next();
     });

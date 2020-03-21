@@ -1,48 +1,37 @@
 import io from 'socket.io-client';
+import { handle_token, handle_signal } from "./webrtc/webrtc";
+
 
 const socket = io();
 
+let connected = false;
 socket.on('connect', () => {
+    connected = true;
+    console.log(socket.id);
     console.log("connected to socket!");
 });
 
-let socket_id = null;
-socket.on("get-id", (data) => {
-    console.log("hello world1");
-    console.log(data);
-    if (data.id) {
-        socket_id = data.id;
-    }
-});
-
 socket.on("disconnect", () => {
-    socket_id = null;
+    connected = false;
     console.log("socket disconnected");
 });
 
-//run this stuff at the beginning
-socket.emit("get-id", {});
+socket.on("signal-from-user", handle_signal);
 
-export function get_socket_id() {
-    return socket_id;
+socket.on("request-access-token", handle_token);
+
+export const get_socket_id = () => {
+    if (connected) return socket.id;
+    else return null;
 }
 
-export function request_access_token_handler(f) {
-    socket.on("request-access-token", f);
-}
-
-export function call_made_handler(f) {
-    socket.on("call-made", f);
-}
-
-export function request_access_token() {
+export const request_access_token = () => {
     socket.emit("request-access-token");
 }
 
-export function call_user(data) {
-    socket.emit("call-user", data);
+export const signal_user = data => {
+    socket.emit("signal-user", data);
 }
-
 
 
 

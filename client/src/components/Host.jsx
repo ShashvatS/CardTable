@@ -6,7 +6,7 @@ import FileCopyIcon from "@material-ui/icons/FileCopy";
 import useClipboard from "react-use-clipboard";
 
 import { get_socket_id } from "../scripts/socketconnection";
-import { setup_host } from "../scripts/connections";
+import { setup_host } from "../scripts/webrtc/host";
 
 const useStyles = makeStyles(theme => ({
   button: {

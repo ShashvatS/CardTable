@@ -5,11 +5,10 @@ import cookieParser = require('cookie-parser');
 
 import path = require("path");
 
-import util = require("./util");
 import { v4 as uuid } from 'uuid';
 
 import react from "./routes/react";
-import gamecode_route from "./routes/gamecode";
+import api_gamecode from "./api/gamecode";
 
 export function library_middleware(app: express.Application) {
     app.use(bodyParser.urlencoded({ extended: true }));
@@ -46,11 +45,15 @@ export function redirect_https(app: express.Application) {
     }
 }
 
+export const client_id_cookie: string = "clientid";
+
 //set client id cookie before serving any resources
 export function set_cookies(app: express.Application) {
     app.get('/*', (req: express.Request, res: express.Response, next) => {
         if (req.cookies.clientid === undefined) {
-            res.cookie(util.client_id_cookie, uuid());
+            res.cookie(client_id_cookie, uuid(), {
+                maxAge: 24 * 60 * 60 * 1000 // 24 hours
+            });
         }
 
         next();
@@ -86,5 +89,5 @@ export function serve_react(app: express.Application) {
 }
 
 export function handle_gamecode_creation(app: express.Application) {
-    app.use('/api', gamecode_route);
+    app.use('/api', api_gamecode);
 }

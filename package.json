@@ -4,7 +4,7 @@
   "description": "Play any card or board game with your friends",
   "main": "app.js",
   "scripts": {
-    "start": "node build/app",
+    "start": "node .build/app",
     "heroku-postbuild": "cd client && npm install && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

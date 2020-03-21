@@ -1,71 +1,55 @@
-import express = require('express');
-import { addGameCode, getSocket } from '../gamecodesocket';
-
-const router = express.Router();
-
-function randomString(length: number): string {
-    var str: string = '';
-    var chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for (var i = length; i > 0; --i) str += chars[Math.floor(Math.random() * chars.length)];
-    return str;
-}
-
-router.post('/host', (req: express.Request, res: express.Response) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var express = require("express");
+var storegamecode_1 = require("../logic/storegamecode");
+var router = express.Router();
+router.post('/host', function (req, res) {
     if (req.body == null) {
         res.json({
             success: false,
             reason: "no request body"
         });
     }
-
-    const socketId = req.body.socketId;
+    var socketId = req.body.socketId;
     if (socketId == null) {
         res.json({
             success: false,
             reason: "did not supply socketId"
         });
     }
-
     else {
-        const gameId: string = randomString(10);
-
-        addGameCode(gameId, socketId);
-
+        var gameId = storegamecode_1.newGameCode(socketId);
         res.json({
             success: true,
             gameCode: gameId
         });
     }
 });
-
-router.post('/join', (req: express.Request, res: express.Response) => {
+router.post('/join', function (req, res) {
     if (req.body == null) {
         res.json({
             success: false,
             reason: "no request body"
         });
     }
-
-    const gameCode = req.body.gameCode;
+    var gameCode = req.body.gameCode;
     if (gameCode == null) {
         res.json({
             success: false,
             reason: "did not supply gameCode"
         });
     }
-
-    const socket = getSocket(gameCode);
+    var socket = storegamecode_1.getHostSocket(gameCode);
     if (socket == null) {
         res.json({
             success: false,
             reason: "invalid gamecode / gamecode not found"
         });
     }
-
     res.json({
         success: true,
         socket: socket
     });
 });
-
-export default router;
+exports.default = router;
+//# sourceMappingURL=gamecode.js.map
