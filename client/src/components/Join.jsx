@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button/Button";
 import Input from "@material-ui/core/Input";
 
 import { get_is_host } from "../scripts/webrtc/webrtc";
-import { connect_to_host, test_send } from "../scripts/webrtc/follower";
+import { connect_to_host } from "../scripts/webrtc/follower";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -71,19 +71,6 @@ export default function Join() {
           onClick={join}
         >
           Join
-        </Button>
-      </div>
-
-      <div>
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="primary"
-          onClick={() => {test_send({
-            hello: "world"
-          })}}
-        >
-          Test Message
         </Button>
       </div>
     </React.Fragment>

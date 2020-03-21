@@ -21,7 +21,7 @@ export async function handle_signal(data) {
     if (conn != null) await conn.handle_signal(data);
 }
 
-export function test_send(data) {
-    if (conn.dataChannel == null) return;
-    conn.dataChannel.send(JSON.stringify(data));
+export function send_to_host(data) {
+    if (conn == null) return;
+    conn.send(JSON.stringify(data));
 }

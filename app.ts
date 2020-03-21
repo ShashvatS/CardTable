@@ -23,10 +23,6 @@ handle_errors(app);
 
 signaling_protocol(io);
 
-app.get('/api/helloworld', (req, res) => {
-    res.json({ hello: "world" });
-});
-
 server.listen(app.get('port'), () => {
     console.log('Express server listening on port ', server.address());
 });

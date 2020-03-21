@@ -1,6 +1,9 @@
 import { signal_user } from "../socketconnection";
 import adapter from 'webrtc-adapter';
 
+import { handle_open, handle_close } from "./datachannel";
+import { receive_message } from "./message";
+
 console.log(adapter.browserDetails);
 
 //TODO: deal with nulls and other errors that might happen
@@ -9,6 +12,7 @@ export class RTCConnection {
         this.socket = null;
         this.peerConnection = null;
         this.dataChannel = null;
+        this.isHost = null;
     }
 
     start(iceServers, socket, isHost) {
@@ -17,7 +21,6 @@ export class RTCConnection {
         this.peerConnection = new RTCPeerConnection(iceServers);
 
         this.peerConnection.onicecandidate = (event) => {
-            console.log("found ice candidate");
             if (event.candidate != null) {
                 signal_user({
                     to: socket,
@@ -26,15 +29,17 @@ export class RTCConnection {
             }
         };
 
-        if (isHost) {
+        if (isHost === true) {
+            this.isHost = isHost;
             this.peerConnection.ondatachannel = event => {
                 console.log("open data channel");
                 this.dataChannel = event.channel;
                 this.setupDataChannel();
             }
-        } else {
+        } else if (isHost === false) {
+            this.isHost = isHost;
             this.peerConnection.onnegotiationneeded = async () => {
-                console.log("negotiation needed");
+
                 const offer = await this.peerConnection.createOffer();
                 await this.localDescCreated(offer);
             };
@@ -46,17 +51,13 @@ export class RTCConnection {
     }
 
     setupDataChannel() {
-        const check = checkDataChannelState(this.dataChannel);
-        check();
-        this.dataChannel.onopen = check;
-        this.dataChannel.onclose = check;
-        this.dataChannel.onmessage = event =>
-            insertMessageToDOM(JSON.parse(event.data), false)
+        this.dataChannel.onopen = handle_open(this.dataChannel, this.isHost);
+        this.dataChannel.onclose = handle_close(this.dataChannel, this.isHost);
+        this.dataChannel.onmessage = receive_message(this.isHost);
     }
 
     async localDescCreated(desc) {
         await this.peerConnection.setLocalDescription(desc);
-        console.log("should signal user now...");
         signal_user({
             to: this.socket,
             sdp: this.peerConnection.localDescription,
@@ -64,9 +65,6 @@ export class RTCConnection {
     };
 
     async handle_signal(data) {
-        console.log("follower received signal");
-        console.log(data);
-
         if (this.peerConnection == null || data.from == null) return;
 
         if (data.ice) {
@@ -76,23 +74,13 @@ export class RTCConnection {
             if (this.peerConnection.remoteDescription.type === "offer") {
                 const offer = await this.peerConnection.createAnswer()
                 await this.localDescCreated(offer);
-            } else {
-                console.log("received an answer...");
             }
         }
     }
-}
 
-function checkDataChannelState(dataChannel) {
-    return () => {
-        console.log('WebRTC channel state is:', dataChannel.readyState);
-        if (dataChannel.readyState === 'open') {
-            insertMessageToDOM({ content: 'WebRTC data channel is now open' });
-        }
+    //assumes message is already a string
+    send(message) {
+        if (this.dataChannel == null || this.dataChannel.readyState !== "open") return;
+        this.dataChannel.send(message);
     }
-}
-
-function insertMessageToDOM(options, isFromMe) {
-    console.log(options);
-    console.log(isFromMe);
 }

@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { handle_token, handle_signal } from "./webrtc/webrtc";
+import { handle_signal } from "./webrtc/webrtc";
 
 
 const socket = io();
@@ -7,7 +7,6 @@ const socket = io();
 let connected = false;
 socket.on('connect', () => {
     connected = true;
-    console.log(socket.id);
     console.log("connected to socket!");
 });
 

@@ -24,7 +24,9 @@ export default function Host() {
   const classes = useStyles();
 
   const [code, setCode] = React.useState("");
-  const [{}, setCopied] = useClipboard(code);
+  // const [{}, setCopied] = useClipboard(code);
+
+  const setCopied = useClipboard(code)[1];
 
   async function getCode() {
     let socketId = get_socket_id();

@@ -7,6 +7,7 @@ let iceServers = null;
 export function get_is_host() {
     return is_host;
 }
+
 export function set_is_host(host) {
     is_host = host;
 }
@@ -32,8 +33,6 @@ export async function get_ice_servers() {
 }
 
 export async function handle_signal(data) {
-    console.log("received a signal");
-
     if (is_host === true) {
         await handle_signal_host(data);
     } else if (is_host === false) {

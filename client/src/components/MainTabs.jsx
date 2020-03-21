@@ -8,6 +8,8 @@ import Box from "@material-ui/core/Box";
 
 import HostJoin from "./HostJoin";
 
+import Game from "./game/Game";
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -92,7 +94,7 @@ export function NavTabPanels(props) {
         <HostJoin />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Play
+        <Game />
       </TabPanel>
     </div>
   );

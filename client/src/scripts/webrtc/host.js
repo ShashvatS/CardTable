@@ -30,3 +30,12 @@ export async function handle_signal(data) {
 
     await peerConnections[socket].handle_signal(data);
 }
+
+export function broadcast_message(data) {
+    const message = JSON.stringify(data);
+
+    for (const key of Object.keys(peerConnections)) {
+        peerConnections[key].send(message);
+    }
+}
+

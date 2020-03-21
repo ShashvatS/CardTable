@@ -18,9 +18,6 @@ configure_1.main_apis(app);
 configure_1.serve_react(app);
 configure_1.handle_errors(app);
 signal_1.signaling_protocol(io);
-app.get('/api/helloworld', function (req, res) {
-    res.json({ hello: "world" });
-});
 server.listen(app.get('port'), function () {
     console.log('Express server listening on port ', server.address());
 });

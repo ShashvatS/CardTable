@@ -28,6 +28,7 @@ function view_enine(app) {
 }
 exports.view_enine = view_enine;
 function redirect_https(app) {
+    //do this to allow this to work on heroku I believe
     app.enable('trust proxy');
     if (app.get('env') === "production") {
         app.use(function (req, res, next) {

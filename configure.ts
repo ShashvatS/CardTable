@@ -34,6 +34,7 @@ export function view_enine(app: express.Application) {
 }
 
 export function redirect_https(app: express.Application) {
+    //do this to allow this to work on heroku I believe
     app.enable('trust proxy');
 
     if (app.get('env') === "production") {
