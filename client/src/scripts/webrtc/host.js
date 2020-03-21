@@ -1,5 +1,5 @@
 import { set_is_host, get_ice_servers } from './webrtc';
-import { request_access_token, signal_user } from "../socketconnection";
+import { request_access_token } from "../socketconnection";
 import { RTCConnection } from './connection';
 
 const peerConnections = {};
