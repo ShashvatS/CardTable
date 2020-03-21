@@ -5,6 +5,7 @@ import { RTCConnection } from "./connection"
 const conn = new RTCConnection();
 
 export async function connect_to_host(socket) {
+    console.log(socket);
     set_is_host(false);
     const iceServers = await get_ice_servers();
 

@@ -8,6 +8,7 @@ let connected = false;
 socket.on('connect', () => {
     connected = true;
     console.log("connected to socket!");
+    console.log(socket.id);
 });
 
 socket.on("disconnect", () => {
