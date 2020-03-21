@@ -14,7 +14,7 @@ configure_1.set_properties(app);
 configure_1.view_enine(app);
 configure_1.redirect_https(app);
 configure_1.set_cookies(app);
-configure_1.handle_gamecode_creation(app);
+configure_1.main_apis(app);
 configure_1.serve_react(app);
 configure_1.handle_errors(app);
 signal_1.signaling_protocol(io);

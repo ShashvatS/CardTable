@@ -1,6 +1,3 @@
-import { connect_to_host } from "./follower";
-import { setup_host } from "./host";
-
 import { handle_signal as handle_signal_follower } from "./follower";
 import { handle_signal as handle_signal_host } from "./host";
 
@@ -14,23 +11,23 @@ export function set_is_host(host) {
     is_host = host;
 }
 
-export function get_ice_servers() {
-    return iceServers;
-}
+export async function get_ice_servers() {
+    if (iceServers != null) return iceServers;
 
-export function handle_token(token) {
-    if (token.iceServers == null) {
-        return;
-    }
+    let response = await fetch("/api/iceservers", {
+        method: "POST"
+    });
 
-    iceServers = token.iceServers;
-    console.log(iceServers);
+    let data = await response.json();
 
-    if (is_host === true) {
-        setup_host();
-    }
-    else if (is_host === false) {
-        connect_to_host(null);
+    if (data.success) {
+        iceServers = data.iceServers;
+        return iceServers;
+    } else {
+        console.log("Could not get ice servers");
+        console.log(data.reason);
+
+        return null;
     }
 }
 

@@ -9,6 +9,7 @@ import { v4 as uuid } from 'uuid';
 
 import react from "./routes/react";
 import api_gamecode from "./api/gamecode";
+import api_iceservers from "./api/iceservers";
 
 export function library_middleware(app: express.Application) {
     app.use(bodyParser.urlencoded({ extended: true }));
@@ -88,6 +89,10 @@ export function serve_react(app: express.Application) {
     app.use('/', react);
 }
 
-export function handle_gamecode_creation(app: express.Application) {
+export function main_apis(app: express.Application) {
+    //handle gamecode creation
     app.use('/api', api_gamecode);
+
+    //handle twilio token creation and api requests to get ice servers
+    app.use('/api', api_iceservers);
 }

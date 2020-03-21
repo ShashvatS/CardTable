@@ -6,6 +6,7 @@ var path = require("path");
 var uuid_1 = require("uuid");
 var react_1 = require("./routes/react");
 var gamecode_1 = require("./api/gamecode");
+var iceservers_1 = require("./api/iceservers");
 function library_middleware(app) {
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
@@ -79,8 +80,11 @@ function serve_react(app) {
     app.use('/', react_1.default);
 }
 exports.serve_react = serve_react;
-function handle_gamecode_creation(app) {
+function main_apis(app) {
+    //handle gamecode creation
     app.use('/api', gamecode_1.default);
+    //handle twilio token creation and api requests to get ice servers
+    app.use('/api', iceservers_1.default);
 }
-exports.handle_gamecode_creation = handle_gamecode_creation;
+exports.main_apis = main_apis;
 //# sourceMappingURL=configure.js.map

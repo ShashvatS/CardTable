@@ -18,15 +18,9 @@ socket.on("disconnect", () => {
 
 socket.on("signal-from-user", handle_signal);
 
-socket.on("request-access-token", handle_token);
-
 export const get_socket_id = () => {
     if (connected) return socket.id;
     else return null;
-}
-
-export const request_access_token = () => {
-    socket.emit("request-access-token");
 }
 
 export const signal_user = data => {

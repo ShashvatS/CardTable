@@ -1,18 +1,16 @@
 import { set_is_host, get_ice_servers } from './webrtc';
-import { request_access_token} from "../socketconnection";
 
 import { RTCConnection } from "./connection"
 
 const conn = new RTCConnection();
 
-export function connect_to_host(socket) {
+export async function connect_to_host(socket) {
     set_is_host(false);
-    const iceServers = get_ice_servers();
+    const iceServers = await get_ice_servers();
 
     if (iceServers == null) {
-        console.log("ice servers null");
+        console.log("ice servers null; aborting connect to host");
         conn.socket = socket;
-        request_access_token();
         return;
     }
 

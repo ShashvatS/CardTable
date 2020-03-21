@@ -1,23 +1,16 @@
 import { set_is_host, get_ice_servers } from './webrtc';
-import { request_access_token } from "../socketconnection";
 import { RTCConnection } from './connection';
 
 const peerConnections = {};
 
-export function setup_host() {
+export async function setup_host() {
     set_is_host(true);
 
-    const iceServers = get_ice_servers();
-
-    if (iceServers == null) {
-        request_access_token();
-        return;
-    }
+    //get ice servers for future
+    await get_ice_servers();
 }
 
 export async function handle_signal(data) {
-    console.log("gello world!");
-
     const socket = data.from;
     if (socket == null) {
         return;
@@ -25,7 +18,7 @@ export async function handle_signal(data) {
 
     if (peerConnections[socket] == null) {
         peerConnections[socket] = new RTCConnection();
-        const iceServers = get_ice_servers();
+        const iceServers = await get_ice_servers();
 
         if (iceServers == null) {
             console.log("Still no ice servers!");
