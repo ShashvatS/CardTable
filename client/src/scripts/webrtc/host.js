@@ -32,15 +32,6 @@ export class HostConnection {
         await this.peerConnections[socket].handle_signal(data);
     }
 
-    target_message(data) {
-        const to = data.only_to;
-
-        if (to == null || this.peerConnections[to] == null) return;
-
-        const message = JSON.stringify(data);
-        this.peerConnections[to].send(message);
-    }
-
     broadcast_message(data) {
         const message = JSON.stringify(data);
     

@@ -2,8 +2,7 @@ import { FollowerConnection } from "./follower";
 import { HostConnection } from "./host";
 
 import { handle_message } from "../message";
-import { startup } from "../logic/startup_logic";
-import { init_host_data } from "../logic/host";
+import { start_game } from "../logic/gamedata";
 
 let iceServers = null;
 
@@ -59,10 +58,7 @@ export const connection = {
         this.hosted_before = true;
         await this.host_conn.setup_host();
 
-        init_host_data();
-
-        //connect to "itself"
-        startup();
+        start_game();
     },
 
     async handle_signal(data) {
@@ -75,8 +71,7 @@ export const connection = {
 
     handleMessage(data) {
         if (this.is_host === true) {
-            if (data.only_to == null) this.host_conn.broadcast_message(data);
-            else if (data.only_to !== "$host") this.host_conn.target_message(data);
+            this.host_conn.broadcast_message(data);
         }
 
         handle_message(data);

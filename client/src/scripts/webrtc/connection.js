@@ -52,7 +52,7 @@ export class RTCConnection {
 
     setupDataChannel() {
         console.log('WebRTC channel state is:', this.dataChannel.readyState);
-        this.dataChannel.onopen = handle_open(this.dataChannel);
+        this.dataChannel.onopen = handle_open(this.dataChannel, this.isHost);
         this.dataChannel.onclose = handle_close(this.dataChannel);
         this.dataChannel.onmessage = receive_message;
     }

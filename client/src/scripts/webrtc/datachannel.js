@@ -1,9 +1,19 @@
-import { startup } from "../logic/startup_logic";
+import { gamedata } from "../logic/gamedata";
 
-export function handle_open(dataChannel) {
+function startup(dataChannel, isHost) {
+    if (isHost) {
+        const data = {
+            init: gamedata.state
+        };
+
+        dataChannel.send(JSON.stringify(data));
+    }
+}
+
+export function handle_open(dataChannel, isHost) {
     return () => {
         console.log('WebRTC channel state is:', dataChannel.readyState);
-        startup();
+        startup(dataChannel, isHost);
     };
 }
 

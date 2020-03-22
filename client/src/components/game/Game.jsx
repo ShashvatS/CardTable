@@ -3,28 +3,35 @@ import Button from "@material-ui/core/Button/Button";
 import { connection } from "../../scripts/webrtc/webrtc";
 
 import { gamedata } from "../../scripts/logic/gamedata";
-import { get_client_id, get_socket_id } from "../../scripts/logic/my_id";
+import { get_client_id } from "../../scripts/logic/my_id";
 
 export class Game extends React.Component {
   constructor(props) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleStartup = this.handleStartup.bind(this);
 
-    this.state = JSON.parse(JSON.stringify(gamedata.state));
+    this.state = {
+      connected: gamedata.started,
+      need_name: gamedata.need_name(),
+      hello: "world"
+    };
   }
 
   componentDidMount() {
-    gamedata.addEventListener("startup-event", this.handleChange);
+    gamedata.addEventListener("startup-event", this.handleStartup);
   }
 
   componentWillUnmount() {
-    gamedata.removeEventListener("startup-event", this.handleChange);
+    gamedata.removeEventListener("startup-event", this.handleStartup);
   }
 
-  handleChange(_event) {
+  handleStartup(_event) {
     console.log("handle change");
-    this.setState(gamedata.state);
+    this.setState({
+      connected: gamedata.started,
+      need_name: gamedata.need_name()
+    });
   }
 
   render() {
@@ -38,22 +45,15 @@ export class Game extends React.Component {
 
     function setName(_event) {
       connection.sendMessage({
-        only_to: "$host",
-        startup: {
-          request: "set-name?",
+        set_name: {
           client: get_client_id(),
-          socket: get_socket_id(),
           name: "Larry"
         }
       });
     }
 
-    if (this.state.setup) {
-      return (
-        <Button variant="contained" color="primary" onClick={send}>
-          Send a message
-        </Button>
-      );
+    if (!this.state.connected) {
+      return <div>Waiting to connect to the client</div>;
     } else if (this.state.need_name) {
       return (
         <Button variant="contained" color="primary" onClick={setName}>
@@ -62,10 +62,10 @@ export class Game extends React.Component {
       );
     } else {
       return (
-        <div>
-          Waiting to connect to the client
-        </div>
-      )
+        <Button variant="contained" color="primary" onClick={send}>
+          Send a message
+        </Button>
+      );
     }
   }
 }
