@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button/Button";
 import Input from "@material-ui/core/Input";
 
 import { connection } from "../scripts/webrtc/webrtc";
+import { notificationEvents, notification } from "../App";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -28,6 +29,7 @@ export default function Join() {
 
   async function join() {
     if (connection.is_host === true) {
+      notificationEvents.dispatchEvent(notification("error", "Already the host of a game!"));
       console.log("Already the host of a game!\n");
       return;
     }
