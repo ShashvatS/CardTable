@@ -27,7 +27,6 @@ export class Game extends React.Component {
   }
 
   handleStartup(_event) {
-    console.log("handle change");
     this.setState({
       connected: gamedata.started,
       need_name: gamedata.need_name()
@@ -35,8 +34,6 @@ export class Game extends React.Component {
   }
 
   render() {
-    console.log(this.state);
-
     function send(_event) {
       connection.sendMessage({
         hello: "world"

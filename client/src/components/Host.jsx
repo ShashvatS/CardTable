@@ -7,6 +7,7 @@ import useClipboard from "react-use-clipboard";
 
 import { get_socket_id } from "../scripts/logic/my_id";
 import { connection } from "../scripts/webrtc/webrtc";
+import { notify } from "./NotificationSystem";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -48,8 +49,8 @@ export default function Host() {
     let data = await response.json();
 
     if (!data || !data.success) {
-      console.log("Get gamecode failed");
-      console.log(data);
+      
+      notify("error", "Failed to obtain a game code.");
     } else {
       setCode(data.gameCode);
       await connection.setup_host();
