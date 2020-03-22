@@ -52,7 +52,7 @@ export const client_id_cookie: string = "clientid";
 //set client id cookie before serving any resources
 export function set_cookies(app: express.Application) {
     app.all('/*', (req: express.Request, res: express.Response, next) => {
-        if (req.cookies.clientid === undefined) {
+        if (req.cookies[client_id_cookie] === undefined) {
             res.cookie(client_id_cookie, uuid(), {
                 maxAge: 24 * 60 * 60 * 1000 // 24 hours
             });

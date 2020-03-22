@@ -5,7 +5,7 @@ import Input from "@material-ui/core/Input";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import useClipboard from "react-use-clipboard";
 
-import { get_socket_id } from "../scripts/socketconnection";
+import { get_socket_id } from "../scripts/logic/my_id";
 import { connection } from "../scripts/webrtc/webrtc";
 
 const useStyles = makeStyles(theme => ({

@@ -2,6 +2,8 @@ import { FollowerConnection } from "./follower";
 import { HostConnection } from "./host";
 
 import { handle_message } from "../message";
+import { startup } from "../logic/startup_logic";
+import { init_host_data } from "../logic/host";
 
 let iceServers = null;
 
@@ -56,6 +58,11 @@ export const connection = {
         this.is_host = true;
         this.hosted_before = true;
         await this.host_conn.setup_host();
+
+        init_host_data();
+
+        //connect to "itself"
+        startup();
     },
 
     async handle_signal(data) {
@@ -68,7 +75,8 @@ export const connection = {
 
     handleMessage(data) {
         if (this.is_host === true) {
-            this.host_conn.broadcast_message(data);
+            if (data.only_to == null) this.host_conn.broadcast_message(data);
+            else if (data.only_to !== "$host") this.host_conn.target_message(data);
         }
 
         handle_message(data);
