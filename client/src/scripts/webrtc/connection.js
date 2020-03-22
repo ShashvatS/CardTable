@@ -2,7 +2,7 @@ import { signal_user } from "../socketconnection";
 import adapter from 'webrtc-adapter';
 
 import { handle_open, handle_close } from "./datachannel";
-import { receive_message } from "./message";
+import { receive_message } from "./webrtc";
 
 console.log(adapter.browserDetails);
 
@@ -51,9 +51,10 @@ export class RTCConnection {
     }
 
     setupDataChannel() {
-        this.dataChannel.onopen = handle_open(this.dataChannel, this.isHost);
-        this.dataChannel.onclose = handle_close(this.dataChannel, this.isHost);
-        this.dataChannel.onmessage = receive_message(this.isHost);
+        console.log('WebRTC channel state is:', this.dataChannel.readyState);
+        this.dataChannel.onopen = handle_open(this.dataChannel);
+        this.dataChannel.onclose = handle_close(this.dataChannel);
+        this.dataChannel.onmessage = receive_message;
     }
 
     async localDescCreated(desc) {

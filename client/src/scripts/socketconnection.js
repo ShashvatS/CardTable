@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { handle_signal } from "./webrtc/webrtc";
+import { connection } from "./webrtc/webrtc";
 
 
 const socket = io();
@@ -8,7 +8,6 @@ let connected = false;
 socket.on('connect', () => {
     connected = true;
     console.log("connected to socket!");
-    console.log(socket.id);
 });
 
 socket.on("disconnect", () => {
@@ -16,7 +15,9 @@ socket.on("disconnect", () => {
     console.log("socket disconnected");
 });
 
-socket.on("signal-from-user", handle_signal);
+socket.on("signal-from-user", data => {
+    connection.handle_signal(data);
+});
 
 export const get_socket_id = () => {
     if (connected) return socket.id;

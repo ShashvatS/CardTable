@@ -1,41 +1,43 @@
-import { set_is_host, get_ice_servers } from './webrtc';
+import { get_ice_servers } from './webrtc';
 import { RTCConnection } from './connection';
 
-const peerConnections = {};
-
-export async function setup_host() {
-    set_is_host(true);
-
-    //get ice servers for future
-    await get_ice_servers();
-}
-
-export async function handle_signal(data) {
-    const socket = data.from;
-    if (socket == null) {
-        return;
+export class HostConnection {
+    constructor() {
+        this.peerConnections = {};
     }
 
-    if (peerConnections[socket] == null) {
-        peerConnections[socket] = new RTCConnection();
-        const iceServers = await get_ice_servers();
+    async setup_host() {    
+        //get ice servers for future
+        await get_ice_servers();
+    }
 
-        if (iceServers == null) {
-            console.log("Still no ice servers!");
+    async handle_signal(data) {
+        const socket = data.from;
+        if (socket == null) {
             return;
         }
-
-        peerConnections[socket].start(iceServers, socket, true);
+    
+        if (this.peerConnections[socket] == null) {
+            this.peerConnections[socket] = new RTCConnection();
+            const iceServers = await get_ice_servers();
+    
+            if (iceServers == null) {
+                console.log("Still no ice servers!");
+                return;
+            }
+    
+            this.peerConnections[socket].start(iceServers, socket, true);
+        }
+    
+        await this.peerConnections[socket].handle_signal(data);
     }
 
-    await peerConnections[socket].handle_signal(data);
-}
-
-export function broadcast_message(data) {
-    const message = JSON.stringify(data);
-
-    for (const key of Object.keys(peerConnections)) {
-        peerConnections[key].send(message);
+    broadcast_message(data) {
+        const message = JSON.stringify(data);
+    
+        for (const key of Object.keys(this.peerConnections)) {
+            this.peerConnections[key].send(message);
+        }
     }
 }
 

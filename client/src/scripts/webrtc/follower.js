@@ -1,28 +1,30 @@
-import { set_is_host, get_ice_servers } from './webrtc';
+import { get_ice_servers } from './webrtc';
 
 import { RTCConnection } from "./connection"
 
-const conn = new RTCConnection();
-
-export async function connect_to_host(socket) {
-    console.log(socket);
-    set_is_host(false);
-    const iceServers = await get_ice_servers();
-
-    if (iceServers == null) {
-        console.log("ice servers null; aborting connect to host");
-        conn.socket = socket;
-        return;
+export class FollowerConnection {
+    constructor() {
+        this.conn = new RTCConnection();
     }
 
-    conn.start(iceServers, socket, false);
-}
+    async connect_to_host(socket) {
+        const iceServers = await get_ice_servers();
+    
+        if (iceServers == null) {
+            console.log("ice servers null; aborting connect to host");
+            this.conn.socket = socket;
+            return;
+        }
+    
+        this.conn.start(iceServers, socket, false);
+    }
 
-export async function handle_signal(data) {
-    if (conn != null) await conn.handle_signal(data);
-}
+    async handle_signal(data) {
+        if (this.conn != null) await this.conn.handle_signal(data);
+    }
 
-export function send_to_host(data) {
-    if (conn == null) return;
-    conn.send(JSON.stringify(data));
+    send_to_host(data) {
+        if (this.conn == null) return;
+        this.conn.send(JSON.stringify(data));
+    }
 }

@@ -6,7 +6,7 @@ import FileCopyIcon from "@material-ui/icons/FileCopy";
 import useClipboard from "react-use-clipboard";
 
 import { get_socket_id } from "../scripts/socketconnection";
-import { setup_host } from "../scripts/webrtc/host";
+import { connection } from "../scripts/webrtc/webrtc";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -52,7 +52,7 @@ export default function Host() {
       console.log(data);
     } else {
       setCode(data.gameCode);
-      await setup_host();
+      await connection.setup_host();
     }
   }
 

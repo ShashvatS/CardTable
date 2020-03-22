@@ -1,11 +1,10 @@
 import React from "react";
 import Button from "@material-ui/core/Button/Button";
-import { sendMessage } from "../../scripts/webrtc/message";
+import { connection } from "../../scripts/webrtc/webrtc";
 
 function Game() {
   function send(_event) {
-    console.log("send");
-    sendMessage({
+    connection.sendMessage({
       hello: "world"
     });
   }

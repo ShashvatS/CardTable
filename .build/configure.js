@@ -44,7 +44,7 @@ exports.redirect_https = redirect_https;
 exports.client_id_cookie = "clientid";
 //set client id cookie before serving any resources
 function set_cookies(app) {
-    app.get('/*', function (req, res, next) {
+    app.all('/*', function (req, res, next) {
         if (req.cookies.clientid === undefined) {
             res.cookie(exports.client_id_cookie, uuid_1.v4(), {
                 maxAge: 24 * 60 * 60 * 1000 // 24 hours
@@ -62,19 +62,21 @@ function handle_errors(app) {
             res.status(err['status'] || 500);
             res.render('error', {
                 message: err.message,
+                error: err
+            });
+        });
+    }
+    else {
+        // production error handler
+        // no stacktraces leaked to user
+        app.use(function (err, req, res, next) {
+            res.status(err.status || 500);
+            res.render('error', {
+                message: err.message,
                 error: {}
             });
         });
     }
-    // production error handler
-    // no stacktraces leaked to user
-    app.use(function (err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: {}
-        });
-    });
 }
 exports.handle_errors = handle_errors;
 function serve_react(app) {

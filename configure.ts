@@ -51,7 +51,7 @@ export const client_id_cookie: string = "clientid";
 
 //set client id cookie before serving any resources
 export function set_cookies(app: express.Application) {
-    app.get('/*', (req: express.Request, res: express.Response, next) => {
+    app.all('/*', (req: express.Request, res: express.Response, next) => {
         if (req.cookies.clientid === undefined) {
             res.cookie(client_id_cookie, uuid(), {
                 maxAge: 24 * 60 * 60 * 1000 // 24 hours
@@ -70,20 +70,24 @@ export function handle_errors(app: express.Application) {
             res.status(err['status'] || 500);
             res.render('error', {
                 message: err.message,
+                error: err
+            });
+        });
+    }
+
+    else {
+        // production error handler
+        // no stacktraces leaked to user
+        app.use((err: any, req, res, next) => {
+            res.status(err.status || 500);
+            res.render('error', {
+                message: err.message,
                 error: {}
             });
         });
     }
 
-    // production error handler
-    // no stacktraces leaked to user
-    app.use((err: any, req, res, next) => {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: {}
-        });
-    });
+
 }
 
 export function serve_react(app: express.Application) {
