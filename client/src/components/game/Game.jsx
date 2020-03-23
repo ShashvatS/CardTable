@@ -12,11 +12,22 @@ export class Game extends React.Component {
 
     this.handleStartup = this.handleStartup.bind(this);
 
-    this.state = {
+    const state = {
       connected: gamedata.started,
-      need_name: gamedata.need_name(),
-      hello: "world"
+      need_name: gamedata.need_name()
     };
+
+    if (!state.connected) {
+      if (connection.is_host === true) {
+        state.reason = "Still setting up";
+      } else if (connection.is_host === false) {
+        state.reason = "Still connecting to host";
+      } else {
+        state.reason = "Join or host a game first!";
+      }
+    }
+
+    this.state = state;
   }
 
   componentDidMount() {
@@ -54,11 +65,9 @@ export class Game extends React.Component {
     }
 
     if (!this.state.connected) {
-    return <div>{this.state.reason}</div>;
+      return <div>{this.state.reason}</div>;
     } else if (this.state.need_name) {
-      return (
-        <SetName />
-      );
+      return <SetName />;
     } else {
       return (
         <Button variant="contained" color="primary" onClick={send}>
