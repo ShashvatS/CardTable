@@ -35,7 +35,7 @@ export function handle_state_change(peerConnection, isHost) {
 export function handle_close(_dataChannel, isHost) {
     return () => {
         if (!isHost) {
-            notify("default", "Disconnected from host.");
+            notify("default", "Disconnected from host");
         }
 
     };

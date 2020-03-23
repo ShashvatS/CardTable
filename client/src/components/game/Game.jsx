@@ -3,7 +3,8 @@ import Button from "@material-ui/core/Button/Button";
 import { connection } from "../../scripts/webrtc/webrtc";
 
 import { gamedata } from "../../scripts/logic/gamedata";
-import { get_client_id } from "../../scripts/logic/my_id";
+
+import SetName from "./SetName";
 
 export class Game extends React.Component {
   constructor(props) {
@@ -40,22 +41,11 @@ export class Game extends React.Component {
       });
     }
 
-    function setName(_event) {
-      connection.sendMessage({
-        set_name: {
-          client: get_client_id(),
-          name: "Larry"
-        }
-      });
-    }
-
     if (!this.state.connected) {
       return <div>Waiting to connect to the client</div>;
     } else if (this.state.need_name) {
       return (
-        <Button variant="contained" color="primary" onClick={setName}>
-          Set your name
-        </Button>
+        <SetName />
       );
     } else {
       return (

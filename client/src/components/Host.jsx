@@ -50,7 +50,7 @@ export default function Host() {
 
     if (!data || !data.success) {
       
-      notify("error", "Failed to obtain a game code.");
+      notify("error", "Failed to obtain a game code");
     } else {
       setCode(data.gameCode);
       await connection.setup_host();
