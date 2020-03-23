@@ -9,6 +9,7 @@ class GameData extends EventTarget {
         this.started = false;
 
         this.state = {
+            message_counter: 0,
             client2name: {},
             name2client: {}
         };

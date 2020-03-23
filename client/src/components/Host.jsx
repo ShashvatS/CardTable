@@ -3,7 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button/Button";
 import Input from "@material-ui/core/Input";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
-import useClipboard from "react-use-clipboard";
+
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import { get_socket_id } from "../scripts/logic/my_id";
 import { connection } from "../scripts/webrtc/webrtc";
@@ -25,9 +26,6 @@ export default function Host() {
   const classes = useStyles();
 
   const [code, setCode] = React.useState("");
-  // const [{}, setCopied] = useClipboard(code);
-
-  const setCopied = useClipboard(code)[1];
 
   async function getCode() {
     let socketId = get_socket_id();
@@ -49,12 +47,16 @@ export default function Host() {
     let data = await response.json();
 
     if (!data || !data.success) {
-      
       notify("error", "Failed to obtain a game code");
     } else {
       setCode(data.gameCode);
       await connection.setup_host();
     }
+  }
+
+  //TODO: check that this doesn't notify when browser is unable to copy the code
+  function copy() {
+    notify("success", "Copied the game code");
   }
 
   return (
@@ -79,9 +81,11 @@ export default function Host() {
           value={code}
         />
 
-        <Button className={classes.gameCode} onClick={setCopied}>
-          <FileCopyIcon />
-        </Button>
+        <CopyToClipboard text={code} onCopy={copy}>
+          <Button className={classes.gameCode}>
+            <FileCopyIcon />
+          </Button>
+        </CopyToClipboard>
       </div>
     </React.Fragment>
   );

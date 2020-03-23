@@ -32,6 +32,7 @@ export const connection = {
     host_conn: new HostConnection(),
     follower_conn: new FollowerConnection(),
     hosted_before: false,
+    message_counter: 0,
 
     async connect_to_host(socket) {
         if (this.follower_conn.conn.socket != null) {
@@ -52,6 +53,7 @@ export const connection = {
     async setup_host() {
         if (this.hosted_before) {
             this.host_conn = new HostConnection();
+            this.message_counter = 0
         }
 
         this.is_host = true;
@@ -71,7 +73,10 @@ export const connection = {
 
     handleMessage(data) {
         if (this.is_host === true) {
+            data.message_counter = this.message_counter;
             this.host_conn.broadcast_message(data);
+
+            this.message_counter += 1;
         }
 
         handle_message(data);
