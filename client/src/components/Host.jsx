@@ -82,7 +82,7 @@ export default function Host() {
         />
 
         <CopyToClipboard text={code} onCopy={copy}>
-          <Button className={classes.gameCode}>
+          <Button className={classes.gameCode} color="primary">
             <FileCopyIcon />
           </Button>
         </CopyToClipboard>

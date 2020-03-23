@@ -25,9 +25,12 @@ class GameData extends EventTarget {
 export let gamedata = new GameData();
 
 export function start_game() {
+    //deal with event handlers
     if (gamedata.started) {
         gamedata = new GameData();
     }
     
     gamedata.started = true;
+
+    gamedata.dispatchEvent(new Event("startup-event"));
 }
