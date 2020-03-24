@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import PolymerIcon from "@material-ui/icons/Polymer";
 
-import { MainTabs } from "./MainTabs"
+import { MainTabs } from "./MainTabs";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,6 +17,9 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     flexGrow: 1
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1
   }
 }));
 
@@ -26,7 +29,10 @@ export default function MainMenu(props) {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar
+        position="relative"
+        className={classes.appBar}
+      >
         <Toolbar>
           <IconButton
             edge="start"
@@ -40,7 +46,7 @@ export default function MainMenu(props) {
             Card Table
           </Typography>
 
-          <MainTabs value={value} setValue={setValue}/>
+          <MainTabs value={value} setValue={setValue} />
         </Toolbar>
       </AppBar>
     </div>

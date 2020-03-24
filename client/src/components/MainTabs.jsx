@@ -11,20 +11,35 @@ import HostJoin from "./HostJoin";
 import Game from "./game/Game";
 
 function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, havepadding, ...other } = props;
 
-  return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      id={`main-tabpanel-${index}`}
-      aria-labelledby={`main-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box p={3}>{children}</Box>}
-    </Typography>
-  );
+  if (havepadding === 0) {
+    return (
+      <Typography
+        component="div"
+        role="tabpanel"
+        hidden={value !== index}
+        id={`main-tabpanel-${index}`}
+        aria-labelledby={`main-tab-${index}`}
+        {...other}
+      >
+        {value === index && <Box p={3}>{children}</Box>}
+      </Typography>
+    );
+  } else {
+    return (
+      <Typography
+        component="div"
+        role="tabpanel"
+        hidden={value !== index}
+        id={`main-tabpanel-${index}`}
+        aria-labelledby={`main-tab-${index}`}
+        {...other}
+      >
+        {value === index && <Box>{children}</Box>}
+      </Typography>
+    );
+  }
 }
 
 TabPanel.propTypes = {
@@ -87,13 +102,13 @@ export function NavTabPanels(props) {
 
   return (
     <div className={classes.root}>
-      <TabPanel value={value} index={0}>
+      <TabPanel havepadding={0} value={value} index={0}>
         Home
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      <TabPanel havepadding={0} value={value} index={1}>
         <HostJoin />
       </TabPanel>
-      <TabPanel value={value} index={2}>
+      <TabPanel havepadding={1} value={value} index={2}>
         <Game />
       </TabPanel>
     </div>
