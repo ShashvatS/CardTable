@@ -1,4 +1,5 @@
 import { gamedata } from "./logic/gamedata";
+import { get_client_id } from "./logic/my_id";
 
 function set_name(data) {
     const client = data.client;
@@ -16,11 +17,31 @@ function set_name(data) {
     }
 }
 
+function handleChatMessage(data) {
+    if (data.author == null || data.message == null || data.message === "") return;
+    if (data.author === get_client_id()) {
+        data.is_author = true;
+    } else {
+        data.is_author = false;
+    }
+
+    data.author = gamedata.state.client2name[data.author];
+
+    if (data.author == null) return;
+
+    gamedata.chatMessages.push(data);
+    gamedata.dispatchEvent(new Event("chat-message"));
+}
+
 function handle_message_main(data) {
     if (data == null) return;
 
     if (data.set_name != null) {
         set_name(data.set_name);
+    }
+
+    if (data.chatMessage) {
+        handleChatMessage(data.chatMessage);
     }
 }
 
@@ -28,12 +49,15 @@ const message_storage = {};
 
 //this deals with receiving messages out of order
 export function handle_message(data) {
+    //might modify data, make a copy of it because this data is also sent to other users
+    data = JSON.parse(JSON.stringify(data));
     if (data == null) return;
 
     //specially handle init because inits are not send to everyone
     if (data.init != null) {
-        gamedata.state = data.init;
-        gamedata.started = true;
+        //storing messages in message_storage and deleting them later on
+        //deep copy to be safe
+        gamedata.copyState(JSON.parse(JSON.stringify(data.init)));
     }
     
     if (data.message_counter == null) return;

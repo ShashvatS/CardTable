@@ -3,20 +3,19 @@ import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import { CssBaseline } from "@material-ui/core";
 import Box from "@material-ui/core/Box/Box";
+import ChatIcon from "@material-ui/icons/Chat";
+import Input from "@material-ui/core/Input";
+import SendIcon from "@material-ui/icons/Send";
+import ChatMessages from "./ChatMessages";
+import { get_client_id } from "../../scripts/logic/my_id";
+import { connection } from "../../scripts/webrtc/webrtc";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,16 +27,15 @@ const useStyles = makeStyles(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    width: "100%",
-    backgroundColor: "#aaa"
+    width: "100%"
   },
   appBarShift: {
-    width: "calc(67%)",
+    width: "70%",
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
-    marginRight: "calc(33%)"
+    marginRight: "30%"
   },
   title: {
     flexGrow: 1
@@ -46,11 +44,11 @@ const useStyles = makeStyles(theme => ({
     display: "none"
   },
   drawer: {
-    width: "calc(33%)",
+    width: "30%",
     flexShrink: 0
   },
   drawerPaper: {
-    width: "calc(33%)"
+    width: "30%"
   },
   drawerHeader: {
     display: "flex",
@@ -67,7 +65,7 @@ const useStyles = makeStyles(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    marginRight: "calc(-33%)"
+    marginRight: "-30%"
   },
   contentShift: {
     transition: theme.transitions.create("margin", {
@@ -76,7 +74,37 @@ const useStyles = makeStyles(theme => ({
     }),
     marginRight: 0
   },
-  toolbar: theme.mixins.toolbar
+  toolbar: theme.mixins.toolbar,
+  chatContainer: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%"
+  },
+  header: {
+    flex: "0 0 auto"
+  },
+  messages: {
+    flex: "1 1 auto",
+    overflow: "auto"
+  },
+  send: {
+    flex: "1 0 auto"
+  },
+  sendBox: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row"
+  },
+  sendField: {
+    flex: "1 1",
+    // display: "inline-block"
+    width: "50%"
+  },
+  sendButton: {
+    flex: "0 0",
+    // display: "inline-block"
+    width: "50%"
+  }
 }));
 
 export default function MainGame() {
@@ -92,6 +120,31 @@ export default function MainGame() {
     setOpen(false);
   };
 
+  const [message, setMessage] = React.useState("");
+
+  function textFieldChange(event) {
+    setMessage(event.target.value);
+  }
+
+  function sendMessage() {
+    const data = {
+      chatMessage: {
+        author: get_client_id(),
+        message: message
+      }
+    };
+
+    setMessage("");
+
+    connection.sendMessage(data);
+  }
+
+  function onKeyPress(event) {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  }
+
   return (
     <div>
       <CssBaseline />
@@ -102,7 +155,7 @@ export default function MainGame() {
       >
         <Toolbar>
           <Typography variant="h6" noWrap className={classes.title}>
-            Persistent drawer
+            {/* Apparently, without this, the chat button moves to the left... */}
           </Typography>
           <IconButton
             color="inherit"
@@ -111,7 +164,7 @@ export default function MainGame() {
             onClick={handleDrawerOpen}
             className={clsx(open && classes.hide)}
           >
-            <MenuIcon />
+            <ChatIcon />
           </IconButton>
         </Toolbar>
       </div>
@@ -165,39 +218,43 @@ export default function MainGame() {
             paper: classes.drawerPaper
           }}
         >
-          <div className={classes.toolbar} />
+          <div className={classes.chatContainer}>
+            <div className={clsx(classes.toolbar, classes.header)} />
 
-          <div className={classes.drawerHeader}>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "rtl" ? (
-                <ChevronLeftIcon />
-              ) : (
-                <ChevronRightIcon />
-              )}
-            </IconButton>
+            <div className={clsx(classes.drawerHeader, classes.header)}>
+              <IconButton onClick={handleDrawerClose}>
+                {theme.direction === "rtl" ? (
+                  <ChevronLeftIcon />
+                ) : (
+                  <ChevronRightIcon />
+                )}
+              </IconButton>
+              Game Chat
+            </div>
+            <Divider />
+            <div className={classes.messages}>
+              <ChatMessages />
+            </div>
+            <div className={classes.send}>
+              <Box p={1} className={classes.sendBox}>
+                <Input
+                  color="primary"
+                  inputProps={{ "aria-label": "description" }}
+                  onChange={textFieldChange}
+                  onKeyPress={onKeyPress}
+                  className={classes.sendField}
+                  value={message}
+                />
+
+                <IconButton
+                  className={classes.sendButton}
+                  onClick={sendMessage}
+                >
+                  <SendIcon />
+                </IconButton>
+              </Box>
+            </div>
           </div>
-          <Divider />
-          <List>
-            {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {["All mail", "Trash", "Spam"].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
         </Drawer>
       </div>
     </div>

@@ -5,7 +5,6 @@ import { gamedata } from "../../scripts/logic/gamedata";
 
 import SetName from "./SetName";
 import MainGame from "./MainGame";
-import CssBaseline from "@material-ui/core/CssBaseline";
 
 export class Game extends React.Component {
   constructor(props) {
@@ -59,27 +58,17 @@ export class Game extends React.Component {
   }
 
   render() {
-    function send(_event) {
-      connection.sendMessage({
-        hello: "world"
-      });
+    if (!this.state.connected) {
+      return <div>{this.state.reason}</div>;
+    } else if (this.state.need_name) {
+      return <SetName />;
+    } else {
+      return (
+        <MainGame />
+      );
     }
-
-    // if (!this.state.connected) {
-    //   return <div>{this.state.reason}</div>;
-    // } else if (this.state.need_name) {
-    //   return <SetName />;
-    // } else {
-    //   return (
-    //     <MainGame />
-    //   );
-    // }
-    return (
-      <React.Fragment>
-        <MainGame></MainGame>
-      </React.Fragment>
-    );
   }
+
 }
 
 export default Game;

@@ -52,6 +52,12 @@ export default function Join() {
     }
   }
 
+  function onKeyPress(event) {
+    if (event.key === "Enter") {
+      join();
+    }
+  }
+
   return (
     <React.Fragment>
       <div className={classes.gameCode}>Game code:</div>
@@ -60,6 +66,7 @@ export default function Join() {
         color="primary"
         inputProps={{ "aria-label": "description" }}
         onChange={textFieldChange}
+        onKeyPress={onKeyPress}
       />
 
       <div className={classes.makeRight}>

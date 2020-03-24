@@ -37,6 +37,12 @@ export default function Join() {
     });
   }
 
+  function onKeyPress(event) {
+    if (event.key === "Enter") {
+      setname();
+    }
+  }
+
   return (
     <React.Fragment>
       <div className={classes.element}>First, enter a screenname: </div>
@@ -45,6 +51,7 @@ export default function Join() {
         color="primary"
         inputProps={{ "aria-label": "description" }}
         onChange={textFieldChange}
+        onKeyPress={onKeyPress}
       />
 
       <Button
