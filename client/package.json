@@ -15,6 +15,8 @@
     "react": "^16.13.0",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.13.0",
+    "react-drag-and-drop": "^3.0.0",
+    "react-draggable": "^4.2.0",
     "react-scripts": "3.4.0",
     "socket.io-client": "^2.3.0",
     "webrtc-adapter": "^7.5.1"

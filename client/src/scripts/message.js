@@ -33,6 +33,14 @@ function handleChatMessage(data) {
     gamedata.dispatchEvent(new Event("chat-message"));
 }
 
+function handleNewPile(data) {
+    if (data == null || data.name == null) return;
+    if (gamedata.pile_exists(data.name)) return;
+
+    gamedata.state.piles.push(data);
+    gamedata.dispatchEvent(new Event("new-pile"));
+}
+
 function handle_message_main(data) {
     if (data == null) return;
 
@@ -42,6 +50,10 @@ function handle_message_main(data) {
 
     if (data.chatMessage) {
         handleChatMessage(data.chatMessage);
+    }
+
+    if (data.makePile) {
+        handleNewPile(data.makePile);
     }
 }
 

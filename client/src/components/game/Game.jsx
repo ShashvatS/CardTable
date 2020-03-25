@@ -1,10 +1,11 @@
 import React from "react";
 import { connection } from "../../scripts/webrtc/webrtc";
-
 import { gamedata } from "../../scripts/logic/gamedata";
 
+import Box from "@material-ui/core/Box/Box";
 import SetName from "./SetName";
 import MainGame from "./MainGame";
+import PlayArea from "./playarea/PlayArea";
 
 export class Game extends React.Component {
   constructor(props) {
@@ -59,16 +60,19 @@ export class Game extends React.Component {
 
   render() {
     if (!this.state.connected) {
-      return <div>{this.state.reason}</div>;
+      return <Box p={3}>{this.state.reason}</Box>;
     } else if (this.state.need_name) {
-      return <SetName />;
+      return <Box p={3}><SetName /></Box>;
     } else {
-      return (
-        <MainGame />
-      );
+      return <MainGame/>;
     }
   }
 
+  // render() {
+  //   return (
+  //     <PlayArea />
+  //   )
+  // }
 }
 
 export default Game;
