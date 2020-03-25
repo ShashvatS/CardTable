@@ -2,10 +2,14 @@ import React from "react";
 import Draggable from "react-draggable";
 import Chip from "@material-ui/core/Chip/Chip";
 import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles(theme => ({
   pile: {
     // float: "right"
+  },
+  pileTitle: {
+    display: "inline"
   }
 }));
 
@@ -14,8 +18,10 @@ export default function Piles(props) {
   const classes = useStyles();
 
   return (
-    <div className={classes.pileContainer}>
-      {/* kind of hacky but whatever... */}
+    <div>
+      <Typography variant="h6" noWrap className={classes.pileTitle}>
+        Piles:{" "}
+      </Typography>
       {piles.map((pile, index) => (
         <Draggable key={index}>
           <Chip

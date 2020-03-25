@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function MainGame(props) {
+export default function MainGame() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -56,7 +56,7 @@ export default function MainGame(props) {
             [classes.contentShift]: open
           })}
         >
-          <PlayArea />
+          <PlayArea/>
         </main>
         <Chat open={[open, setOpen]} />
       </div>

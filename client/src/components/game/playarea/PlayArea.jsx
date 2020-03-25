@@ -4,40 +4,49 @@ import Box from "@material-ui/core/Box/Box";
 import { gamedata } from "../../../scripts/logic/gamedata";
 
 import Piles from "./Piles";
-import PileMaker from "./PileMaker";
+import PileForm from "./PileForm";
 
-
-export default class ChatMessages extends React.Component {
+export default class PlayArea extends React.Component {
   constructor(props) {
     super(props);
 
     this.handleNewPile = this.handleNewPile.bind(this);
+    this.pileFormChange = this.pileFormChange.bind(this);
 
     this.state = {
-      piles: gamedata.state.piles
+      piles: gamedata.state.piles,
+      pileFormOpen: false
     };
   }
 
   componentDidMount() {
     gamedata.addEventListener("new-pile", this.handleNewPile);
+    gamedata.addEventListener("pile-form-change", this.pileFormChange);
   }
 
   componentWillUnmount() {
     gamedata.removeEventListener("new-pile", this.handleNewPile);
+    gamedata.removeEventListener("pile-form-change", this.pileFormChange);
+  }
+
+  pileFormChange(event) {
+    this.setState({
+      pileFormOpen: event.open
+    });
   }
 
   handleNewPile() {
-    console.log("hello world");
     this.setState({
       piles: gamedata.state.piles
     });
   }
 
   render() {
+    console.log(this.state);
     return (
       <Box p={3}>
         <Piles piles={this.state.piles} />
-        <PileMaker />
+        {this.state.pileFormOpen && <PileForm />}
       </Box>
     );
   }

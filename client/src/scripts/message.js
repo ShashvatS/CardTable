@@ -37,6 +37,8 @@ function handleNewPile(data) {
     if (data == null || data.name == null) return;
     if (gamedata.pile_exists(data.name)) return;
 
+    if (data.name === "") return;
+
     gamedata.state.piles.push(data);
     gamedata.dispatchEvent(new Event("new-pile"));
 }

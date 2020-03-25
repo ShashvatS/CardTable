@@ -8,6 +8,7 @@ import IconButton from "@material-ui/core/IconButton";
 import ChatIcon from "@material-ui/icons/Chat";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import Select from "@material-ui/core/Select/Select";
+import PileAdd from "./playarea/PileAdd";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
@@ -127,6 +128,12 @@ export default function MainGameTop(props) {
             ))}
           </Select>
         </Typography>
+
+        <Divider orientation="vertical" flexItem />
+
+        <div className={classes.item}>
+          <PileAdd className={classes.item} />
+        </div>
 
         <Typography variant="h6" noWrap className={classes.space}></Typography>
 

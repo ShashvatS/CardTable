@@ -7,7 +7,8 @@ import { get_client_id } from "../../../scripts/logic/my_id";
 import { gamedata } from "../../../scripts/logic/gamedata";
 import { notify } from "../../NotificationSystem";
 
-export default function PileMaker() {
+export default function PileForm(props) {
+  console.log(props);
   const [pileName, setPileName] = React.useState("");
 
   function textFieldChange(event) {
@@ -29,6 +30,9 @@ export default function PileMaker() {
     connection.sendMessage(data);
 
     setPileName("");
+    let event = new Event("pile-form-change");
+    event.open = false;
+    gamedata.dispatchEvent(event);
   }
 
   function onKeyPress(event) {
