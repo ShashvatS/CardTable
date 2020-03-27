@@ -1,6 +1,4 @@
-import ace from "../images/playingcards/8_of_clubs.png";
-
-class CardSet {
+ class CardSet {
     constructor(numCards, images, cardSubSets, cardSubSetLabels) {
         this.numCards = numCards;
         this.images = images;

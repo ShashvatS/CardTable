@@ -1,4 +1,5 @@
 import { get_client_id } from "./my_id";
+import { MersenneTwister19937, createEntropy } from "random-js";
 
 //TODO: deal with refreshing the gamedata upon a new host or join
 class GameData extends EventTarget {
@@ -9,21 +10,35 @@ class GameData extends EventTarget {
 
         this.cardSet = null;
 
+        let seed = createEntropy();
+        const mt = new MersenneTwister19937(seed);
+
         this.state = {
             game_code: null,
             message_counter: 0,
             client2name: {},
             name2client: {},
-            piles: []
+            piles: [],
+            random: {
+                seed: seed,
+                mt: mt,
+                useCount: mt.getUseCount()
+            }
         };
 
         this.chatMessages = [];
 
         this.copyState = state => {
+            console.log(state);
+
             this.state = state;
             this.started = true;
             this.chatMessages = [];
             this.cardSet = null;
+
+
+            const mt = new MersenneTwister19937(this.state.random.seed);
+            mt.discard(this.state.random.useCount);
         };
 
         this.my_name = () => {
@@ -44,6 +59,10 @@ class GameData extends EventTarget {
 
             return false;
         }
+
+        this.update_random = () => {
+            this.state.random.useCount = this.state.random.mt.getUseCount();
+        }
     }
 }
 
@@ -52,11 +71,19 @@ export let gamedata = new GameData();
 export function start_game(game_code) {
     //deal with event handlers
     if (gamedata.started) {
+        let seed = createEntropy();
+        const mt = new MersenneTwister19937(seed);
+
         gamedata.copyState({
             message_counter: 0,
             client2name: {},
             name2client: {},
-            piles: []
+            piles: [],
+            random: {
+                seed: seed,
+                mt: mt,
+                useCount: mt.getUseCount()
+            }
         });
     }
 

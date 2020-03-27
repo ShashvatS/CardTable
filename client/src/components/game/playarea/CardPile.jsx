@@ -15,10 +15,18 @@ const useStyles = makeStyles(theme => ({
 export default function CardPile(props) {
   const classes = useStyles();
 
+  const x = (value) => {
+      if (props.recordChanges) {
+          return props.makeChange(value);
+      } else {
+          return null;
+      }
+  };
+
   return (
     <div className={classes.cardPile}>
       {props.images.map((value, index) => (
-        <Card className={classes.card} key={index} image={value} />
+        <Card {...props} makeChange={x(value)} className={classes.card} key={index} image={value} />
       ))}
     </div>
   );

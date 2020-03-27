@@ -12,6 +12,7 @@
     "http-proxy-middleware": "^1.0.3",
     "js-cookie": "^2.2.1",
     "notistack": "^0.9.9",
+    "random-js": "^2.1.0",
     "react": "^16.13.0",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.13.0",

@@ -37,10 +37,17 @@ function handleNewPile(data) {
     if (data == null || data.name == null) return;
     if (gamedata.pile_exists(data.name)) return;
 
-    if (data.name === "") return;
+    if (data.name === "" || data.cards == null) return;
 
     gamedata.state.piles.push(data);
     gamedata.dispatchEvent(new Event("new-pile"));
+}
+
+function handleShuffle(data) {
+    if (data == null || data.pile == null) return;
+    let event = new Event("shuffle");
+    event.pile = data.pile;
+    gamedata.dispatchEvent(event);
 }
 
 function handle_message_main(data) {
@@ -56,6 +63,10 @@ function handle_message_main(data) {
 
     if (data.makePile) {
         handleNewPile(data.makePile);
+    }
+
+    if (data.shuffle) {
+        handleShuffle(data.shuffle);
     }
 }
 

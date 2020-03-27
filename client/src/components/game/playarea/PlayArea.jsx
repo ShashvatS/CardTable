@@ -3,6 +3,7 @@ import Box from "@material-ui/core/Box/Box";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import { gamedata } from "../../../scripts/logic/gamedata";
+import shuffle from "../../../scripts/shuffle";
 
 import Piles from "./Piles";
 import PileForm from "./PileForm";
@@ -18,11 +19,6 @@ const useStyles = makeStyles(theme => ({
   center: {
     width: "100%",
     display: "flex"
-    // textAlign: "justify",
-    // zIndex: 3,
-
-    // justifyContent: "center",
-    // alignItems: "center",
   }
 }));
 
@@ -33,7 +29,7 @@ function BoxedMainPlayArea(props) {
       p={3}
       className={clsx({ [classes.opaque]: props.isOpaque }, classes.mainPlay)}
     >
-      <Piles piles={props.piles} />
+      <Piles cardSet={props.cardSet} piles={props.piles} />
     </Box>
   );
 }
@@ -54,6 +50,7 @@ export default class PlayArea extends React.Component {
     this.handleNewPile = this.handleNewPile.bind(this);
     this.pileFormChange = this.pileFormChange.bind(this);
     this.cardSetChange = this.cardSetChange.bind(this);
+    this.shuffle = this.shuffle.bind(this);
 
     this.state = {
       piles: gamedata.state.piles,
@@ -64,14 +61,18 @@ export default class PlayArea extends React.Component {
 
   componentDidMount() {
     gamedata.addEventListener("new-pile", this.handleNewPile);
+    gamedata.addEventListener("startup-event", this.handleNewPile);
     gamedata.addEventListener("pile-form-change", this.pileFormChange);
     gamedata.addEventListener("card-set-change", this.cardSetChange);
+    gamedata.addEventListener("shuffle", this.shuffle);
   }
 
   componentWillUnmount() {
     gamedata.removeEventListener("new-pile", this.handleNewPile);
+    gamedata.removeEventListener("startup-event", this.handleNewPile);
     gamedata.removeEventListener("pile-form-change", this.pileFormChange);
     gamedata.removeEventListener("card-set-change", this.cardSetChange);
+    gamedata.removeEventListener("shuffle", this.shuffle);
   }
 
   pileFormChange(event) {
@@ -89,6 +90,15 @@ export default class PlayArea extends React.Component {
   cardSetChange() {
     this.setState({
       cardSet: gamedata.cardSet
+    });
+  }
+
+  shuffle(event) {
+    let pile = event.pile;
+
+    gamedata.state.piles[pile].cards = shuffle(gamedata.state.piles[pile].cards);
+    this.setState({
+      piles: gamedata.state.piles
     });
   }
 

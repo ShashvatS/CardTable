@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Button from "@material-ui/core/Button/Button";
 import Input from "@material-ui/core/Input";
 import Switch from "@material-ui/core/Switch/Switch";
@@ -25,7 +25,27 @@ const useStyles = makeStyles(theme => ({
 
 function IndividualSelectPile(props) {
   const [selectedSubset, setSelectedSubset] = React.useState(-1);
-  const classes = useStyles();
+
+  const [cards, setCards] = React.useState({});
+
+  const propsmakeChange = props.makeChange;
+
+  useEffect(() => {
+    propsmakeChange(cards);
+  }, [cards, propsmakeChange]);
+
+  function makeChange(i) {
+    return value => {
+      setCards(prev => {
+        let newState = {
+          ...prev,
+          [i]: value
+        };
+
+        return newState;
+      });
+    };
+  }
 
   if (
     props.cardSet == null ||
@@ -57,7 +77,11 @@ function IndividualSelectPile(props) {
 
       <div>
         {selectedSubset !== -1 && (
-          <CardPile images={cardSet.cardSubSets[selectedSubset]} />
+          <CardPile
+            recordChanges={true}
+            makeChange={makeChange}
+            images={cardSet.cardSubSets[selectedSubset]}
+          />
         )}
       </div>
     </Box>
@@ -72,6 +96,19 @@ export default function PileForm(props) {
 
   const [individualPiles, setIndividualPiles] = React.useState([]);
 
+  const [cards, setCards] = React.useState({});
+
+  function makeChange(i) {
+    return value => {
+      setCards(prev => {
+        return {
+          ...prev,
+          [i]: value
+        };
+      });
+    };
+  }
+
   function textFieldChange(event) {
     setPileName(event.target.value);
   }
@@ -82,15 +119,20 @@ export default function PileForm(props) {
     gamedata.dispatchEvent(event);
   }
 
-  function makePile() {
+  function sendPile(pile) {
     if (gamedata.pile_exists(pileName)) {
       notify("warning", "A pile with that name already exists.");
       return;
+    } else if (pileName === "") {
+      notify("warning", "Cannot have empty pile name.");
+      return;
     }
+
     const data = {
       makePile: {
         client: get_client_id(),
-        name: pileName
+        name: pileName,
+        cards: pile
       }
     };
 
@@ -98,6 +140,55 @@ export default function PileForm(props) {
 
     setPileName("");
     closePile();
+  }
+
+  function makePile() {
+    if (
+      props.cardSet == null ||
+      props.cardSet.index == null ||
+      props.cardSet.index === -1
+    )
+      return;
+
+    let pile = [];
+
+    const cardSet = cardSets[props.cardSet.index];
+
+    for (const key1 of Object.keys(cards)) {
+      for (const key2 of Object.keys(cards[key1])) {
+        if (cards[key1][key2]) {
+          pile.push(cardSet.images.indexOf(key2));
+        }
+      }
+    }
+
+    if (!allowDuplicates) {
+      pile = [...new Set(pile)];
+    }
+
+    sendPile(pile);
+  }
+
+  function emptyPile() {
+    sendPile([]);
+  }
+
+  function completePile() {
+    if (
+      props.cardSet == null ||
+      props.cardSet.index == null ||
+      props.cardSet.index === -1
+    )
+      return;
+
+    const numCards = cardSets[props.cardSet.index].numCards;
+
+    const pile = [];
+    for (let i = 0; i < numCards; i += 1) {
+      pile.push(i);
+    }
+
+    sendPile(pile);
   }
 
   function onKeyPress(event) {
@@ -133,8 +224,12 @@ export default function PileForm(props) {
       </div>
 
       <div className={classes.buttonRow}>
-        <Button color="primary">Add all cards</Button>
-        <Button color="primary">Empty pile</Button>
+        <Button color="primary" onClick={completePile}>
+          Add all cards
+        </Button>
+        <Button color="primary" onClick={emptyPile}>
+          Empty pile
+        </Button>
 
         <Divider orientation="vertical" flexItem />
 
@@ -150,6 +245,7 @@ export default function PileForm(props) {
             key={index}
             cardSet={props.cardSet}
             data={value}
+            makeChange={makeChange(index)}
           />
         ))}
       </div>
