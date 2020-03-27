@@ -7,7 +7,6 @@ import { gamedata } from "../../../scripts/logic/gamedata";
 export default function PileAdd() {
 
   function pileWindowButton() {
-    console.log("here...");
     let event = new Event("pile-form-change");
     event.open = true;
     gamedata.dispatchEvent(event);

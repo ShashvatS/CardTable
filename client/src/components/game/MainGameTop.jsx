@@ -15,6 +15,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { notify } from "../NotificationSystem";
 
 import { gamesets } from "../../scripts/gamesets";
+import { gamedata } from "../../scripts/logic/gamedata";
 
 /** this style must be depends on the style of maingame
  */
@@ -67,21 +68,31 @@ export default function MainGameTop(props) {
     notify("success", "Copied the game code");
   }
 
-  const [cardSet, setCardSet] = props.cardSet;
+  const [cardSet, setCardSet] = React.useState({
+    index: -1,
+    name: ""
+  });
 
   function handleChange(event) {
     const value = event.target.value;
+
+    let cardSet = {};
     if (value < 0) {
-      setCardSet({
+      cardSet = {
         index: -1,
         name: ""
-      });
+      };
     } else {
-      setCardSet({
+      cardSet = {
         index: value,
         name: gamesets[value]
-      });
+      };
     }
+
+    setCardSet(cardSet);
+    gamedata.cardSet = cardSet;
+
+    gamedata.dispatchEvent(new Event("card-set-change"));
   }
 
   return (

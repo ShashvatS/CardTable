@@ -5,7 +5,6 @@ import { gamedata } from "../../scripts/logic/gamedata";
 import Box from "@material-ui/core/Box/Box";
 import SetName from "./SetName";
 import MainGame from "./MainGame";
-import PlayArea from "./playarea/PlayArea";
 
 export class Game extends React.Component {
   constructor(props) {
@@ -68,11 +67,6 @@ export class Game extends React.Component {
     }
   }
 
-  // render() {
-  //   return (
-  //     <PlayArea />
-  //   )
-  // }
 }
 
 export default Game;

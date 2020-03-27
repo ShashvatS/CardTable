@@ -1,6 +1,6 @@
 import React from "react";
 import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
 import MainGameTop from "./MainGameTop";
 import PlayArea from "./playarea/PlayArea";
@@ -34,11 +34,6 @@ export default function MainGame() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
-  const [cardSet, setCardSet] = React.useState({
-    index: -1,
-    name: ""
-  });
-
   return (
     <div>
       <CssBaseline />
@@ -46,7 +41,6 @@ export default function MainGame() {
         open={[open, setOpen]}
         gameCode={gamedata.state.game_code}
         playerName={gamedata.my_name()}
-        cardSet={[cardSet, setCardSet]}
       />
 
       <div className={classes.root}>
