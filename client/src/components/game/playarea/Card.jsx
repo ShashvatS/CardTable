@@ -73,17 +73,12 @@ export default function Card(props) {
 
   const [clicked, setClicked] = React.useState(false);
 
-  const currentState = props.viewState;
-  useEffect(() => {
-    if (currentState == null) return;
-
-    setClicked(currentState);
-
-  }, [currentState]);
+  let currentState = props.viewState;
+  if (currentState == null) currentState = clicked;
 
   let visible = true;
 
-  if (flip && !clicked) {
+  if (flip && currentState === false) {
     visible = false;
   }
 

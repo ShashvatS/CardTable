@@ -24,7 +24,7 @@ export default function Join() {
   }
 
   function setname() {
-    if (name == "") {
+    if (name === "") {
       notify("warning", "Cannot have empty name");
       return;
     }

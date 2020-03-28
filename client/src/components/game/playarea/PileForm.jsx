@@ -46,7 +46,7 @@ function IndividualSelectPile(props) {
 
   function makeChange(i) {
     return value => {
-      if (cardSet != null && selectedSubset != -1) {
+      if (cardSet != null && selectedSubset !== -1) {
         const key = cardSet.cardSubsetNums[selectedSubset][i];
 
         setCards(prev => {

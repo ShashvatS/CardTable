@@ -47,7 +47,7 @@ function Pile(props) {
   const classes = useStyles();
 
   let properCardset = true;
-  if (props.cardSet == null || props.cardSet.index == -1) {
+  if (props.cardSet == null || props.cardSet.index === -1) {
     properCardset = false;
   }
 

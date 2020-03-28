@@ -11,7 +11,7 @@ class GameData extends EventTarget {
         this.cardSet = null;
 
         let seed = createEntropy();
-        const mt = new MersenneTwister19937(seed);
+        const mt = MersenneTwister19937.seedWithArray(seed);
 
         this.state = {
             game_code: null,
@@ -35,8 +35,9 @@ class GameData extends EventTarget {
             this.cardSet = null;
 
 
-            const mt = new MersenneTwister19937(this.state.random.seed);
-            mt.discard(this.state.random.useCount);
+            let mt = MersenneTwister19937.seedWithArray(this.state.random.seed);
+            mt = mt.discard(this.state.random.useCount);
+            this.state.random.mt = mt;
         };
 
         this.my_name = () => {
@@ -70,7 +71,7 @@ export function start_game(game_code) {
     //deal with event handlers
     if (gamedata.started) {
         let seed = createEntropy();
-        const mt = new MersenneTwister19937(seed);
+        const mt = MersenneTwister19937.seedWithArray(seed);
 
         gamedata.copyState({
             message_counter: 0,
