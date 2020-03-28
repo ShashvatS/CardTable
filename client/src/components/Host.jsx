@@ -10,9 +10,13 @@ import { get_socket_id } from "../scripts/logic/my_id";
 import { connection } from "../scripts/webrtc/webrtc";
 import { notify } from "./NotificationSystem";
 
+import Switch from "@material-ui/core/Switch/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel/FormControlLabel";
+
 const useStyles = makeStyles(theme => ({
   button: {
-    display: "inline-block"
+    display: "inline-block",
+    padding: 5
   },
   gameCode: {
     display: "inline-block"
@@ -26,6 +30,8 @@ export default function Host() {
   const classes = useStyles();
 
   const [code, setCode] = React.useState("");
+
+  const [usePrevState, setUsePrevState] = React.useState(false);
 
   async function getCode() {
     let socketId = get_socket_id();
@@ -50,13 +56,17 @@ export default function Host() {
       notify("error", "Failed to obtain a game code");
     } else {
       setCode(data.gameCode);
-      await connection.setup_host(data.gameCode);
+      await connection.setup_host(data.gameCode, usePrevState);
     }
   }
 
   //TODO: check that this doesn't notify when browser is unable to copy the code
   function copy() {
     notify("success", "Copied the game code");
+  }
+
+  function handleSwitch(event) {
+    setUsePrevState(event.target.checked);
   }
 
   return (
@@ -69,6 +79,13 @@ export default function Host() {
       >
         Host
       </Button>
+
+      {"    "}
+
+      <FormControlLabel
+        control={<Switch onChange={handleSwitch} color="secondary" />}
+        label="Use last game state"
+      />
 
       <div className={classes.makeRight}>
         <div className={classes.gameCode}>Game code:</div>

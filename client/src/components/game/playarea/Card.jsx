@@ -93,6 +93,7 @@ export default function Card(props) {
     setClicked(!clicked);
   }
 
+  //ignore the warning that they give
   useEffect(() => {
     if (recordChanges) {
       propsmakeChange(clicked);
@@ -125,7 +126,9 @@ export default function Card(props) {
   if (props.drag === true) {
     return (
       <div className={classes.cardContainer}>
-        <Draggable>{main}</Draggable>
+        <Draggable type="card" data={props.data}>
+          {main}
+        </Draggable>
       </div>
     );
   } else {

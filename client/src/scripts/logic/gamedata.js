@@ -67,7 +67,18 @@ class GameData extends EventTarget {
 
 export let gamedata = new GameData();
 
-export function start_game(game_code) {
+export function start_game(game_code, usePrevState) {
+    let data = localStorage.getItem("game");
+    if (usePrevState && data != null) {
+        const state = JSON.parse(data);
+        gamedata.copyState(state);
+
+        gamedata.started = true;
+        gamedata.state.game_code = game_code;
+        gamedata.dispatchEvent(new Event("startup-event"));
+
+        return;
+    }
     //deal with event handlers
     if (gamedata.started) {
         let seed = createEntropy();

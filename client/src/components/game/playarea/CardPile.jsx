@@ -28,6 +28,11 @@ export default function CardPile(props) {
     else return props.viewState[index];
   };
 
+  let dataFunc = props.dataFunc;
+  if (dataFunc == null) {
+    dataFunc = _i => null;
+  }
+
   return (
     <div className={classes.cardPile}>
       {props.images.map((value, index) => (
@@ -41,6 +46,7 @@ export default function CardPile(props) {
           flippable={props.flippable}
           recordChanges={props.recordChanges}
           selectable={props.selectable}
+          data={dataFunc(index)}
         />
       ))}
     </div>

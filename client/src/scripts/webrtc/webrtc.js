@@ -50,7 +50,7 @@ export const connection = {
         await this.follower_conn.connect_to_host(socket);
     },
 
-    async setup_host(gameCode) {
+    async setup_host(gameCode, usePrevState) {
         if (this.hosted_before) {
             this.host_conn = new HostConnection();
             this.message_counter = 0
@@ -60,7 +60,7 @@ export const connection = {
         this.hosted_before = true;
         await this.host_conn.setup_host();
 
-        start_game(gameCode);
+        start_game(gameCode, usePrevState);
     },
 
     async handle_signal(data) {

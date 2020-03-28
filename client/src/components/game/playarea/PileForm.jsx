@@ -30,6 +30,8 @@ function IndividualSelectPile(props) {
 
   const propsmakeChange = props.makeChange;
 
+
+  //ignore the warning that they give
   useEffect(() => {
     propsmakeChange(cards);
   }, [cards]);

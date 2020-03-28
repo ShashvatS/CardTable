@@ -50,6 +50,21 @@ function handleShuffle(data) {
     gamedata.dispatchEvent(event);
 }
 
+function handleMoveCard(data) {
+    if (data == null) return;
+    const from = data.pileFrom;
+    const to = data.pileTo;
+    const card = data.card;
+
+    if (from == null || to == null || card == null) return;
+
+    const item = gamedata.state.piles[from].cards[card];
+    gamedata.state.piles[to].cards.push(item);
+    gamedata.state.piles[from].cards.splice(card, 1);
+
+    gamedata.dispatchEvent(new Event("new-pile"));
+}
+
 function handle_message_main(data) {
     if (data == null) return;
 
@@ -68,6 +83,12 @@ function handle_message_main(data) {
     if (data.shuffle) {
         handleShuffle(data.shuffle);
     }
+
+    if (data.moveCard) {
+        handleMoveCard(data.moveCard);
+    }
+
+    localStorage.setItem("game", JSON.stringify(gamedata.state));
 }
 
 const message_storage = {};
