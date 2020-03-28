@@ -5,7 +5,7 @@ function set_name(data) {
     const client = data.client;
     const name = data.name;
 
-    if (name == null || client == null) return;
+    if (name == null || name == "" || client == null) return;
     if (gamedata.state.client2name[client] != null) return;
 
     //only if client does not already have name and name is not already taken

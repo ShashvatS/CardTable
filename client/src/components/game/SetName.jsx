@@ -24,6 +24,10 @@ export default function Join() {
   }
 
   function setname() {
+    if (name == "") {
+      notify("warning", "Cannot have empty name");
+      return;
+    }
     if (gamedata.state.name2client[name] != null) {
       notify("warning", "This name is already taken");
       return;

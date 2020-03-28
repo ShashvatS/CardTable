@@ -71,7 +71,7 @@ function IndividualSelectPile(props) {
         Card subset:
         <Select native value={selectedSubset} onChange={changeSelectedSubset}>
           <option value={-1} key={-1} />
-          {cardSet.cardSubSetLabels.map((value, index) => (
+          {cardSet.cardSubsetLabels.map((value, index) => (
             <option value={index} key={index}>
               {value}
             </option>
@@ -85,7 +85,7 @@ function IndividualSelectPile(props) {
             recordChanges={true}
             selectable={true}
             makeChange={makeChange}
-            images={cardSet.cardSubSets[selectedSubset]}
+            images={cardSet.cardSubsets[selectedSubset]}
           />
         )}
       </div>

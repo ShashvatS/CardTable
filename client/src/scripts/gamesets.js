@@ -1,9 +1,9 @@
 class CardSet {
-    constructor(numCards, images, cardSubSets, cardSubSetLabels, cardSubsetNums) {
+    constructor(numCards, images, cardSubsets, cardSubsetLabels, cardSubsetNums) {
         this.numCards = numCards;
         this.images = images;
-        this.cardSubSets = cardSubSets;
-        this.cardSubSetLabels = cardSubSetLabels;
+        this.cardSubsets = cardSubsets;
+        this.cardSubsetLabels = cardSubsetLabels;
         this.cardSubsetNums = cardSubsetNums;
     }
 }
@@ -63,22 +63,12 @@ function makePlayingCardsSet() {
     ];
 
 
-    const cardSubSetNums = groups.map(group => range.filter(group));
-    const cardSubSets = cardSubSetNums.map(subset => subset.map(i => images[i]));
+    const cardSubsetNums = groups.map(group => range.filter(group));
+    const cardSubsets = cardSubsetNums.map(subset => subset.map(i => images[i]));
 
-    // const groups = [
-    //     _filename => true,
-    //     filename => filename.includes("clubs"),
-    //     filename => filename.includes("diamonds"),
-    //     filename => filename.includes("hearts"),
-    //     filename => filename.includes("spades"),
-    //     filename => filename.includes("joker")
-    // ];
-    // const cardSubSets = groups.map(group => images.filter(group));
+    const cardSubsetLabels = ["All cards", "Clubs", "Diamonds", "Hearts", "Spades", "Jokers"];
 
-    const cardSubSetLabels = ["All cards", "Clubs", "Diamonds", "Hearts", "Spades", "Jokers"];
-
-    return new CardSet(numCards, images, cardSubSets, cardSubSetLabels, cardSubSetNums);
+    return new CardSet(numCards, images, cardSubsets, cardSubsetLabels, cardSubsetNums);
 }
 
 
