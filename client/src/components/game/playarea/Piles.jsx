@@ -10,6 +10,7 @@ import { connection } from "../../../scripts/webrtc/webrtc";
 
 const useStyles = makeStyles(theme => ({
   root: {
+    position: "relative",
     whiteSpace: "nowrap"
   },
   pile: {
@@ -24,10 +25,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Piles(props) {
-  const piles = props.piles;
-  const classes = useStyles();
-
+function Pile(props) {
   const [showCards, setShowCards] = React.useState(false);
 
   function onClick() {
@@ -40,11 +38,86 @@ export default function Piles(props) {
         shuffle: {
           pile: index
         }
-      }
+      };
 
       connection.sendMessage(data);
+    };
+  }
+
+  const classes = useStyles();
+
+  let properCardset = true;
+  if (props.cardSet == null || props.cardSet.index == -1) {
+    properCardset = false;
+  }
+
+  const [viewState, setViewState] = React.useState({});
+
+  function updateViewState(i) {
+    return value => {
+      setViewState(prev => {
+        let cur = {
+          ...prev,
+          [i]: value
+        };
+
+        return cur;
+      });
     }
   }
+
+  function setAll(value) {
+    return () => {
+      setViewState(prev => {
+        let newState = {};
+        Object.keys(prev).forEach(v => newState[v] = value);
+        return newState;
+      });
+    };
+  }
+
+  return (
+    <Draggable key={props.index}>
+      <div className={classes.root}>
+        <div className={classes.pile}>
+          <Chip
+            color="primary"
+            label={props.pile.name}
+            size="medium"
+            clickable={true}
+            onClick={onClick}
+          />
+          {showCards && (
+            <Button color="primary" onClick={shuffle(props.index)}>
+              Shuffle
+            </Button>
+          )}
+          {showCards && <Button color="primary" onClick={setAll(true)}>Show all</Button>}
+          {showCards && <Button color="primary" onClick={setAll(false)}>Hide all</Button>}
+        </div>
+        {properCardset && showCards && (
+          <CardPile
+            className={classes.pileCards}
+            images={props.pile.cards.map(
+              i => cardSets[props.cardSet.index].images[i]
+            )}
+            recordChanges={true}
+            selectable={false}
+            flippable={true}
+            viewState={viewState}
+            makeChange={updateViewState}
+            drag={true}
+          />
+        )}
+        {!properCardset && showCards && <div>Select a card set</div>}
+      </div>
+    </Draggable>
+  );
+}
+
+export default function Piles(props) {
+  const piles = props.piles;
+  const classes = useStyles();
 
   return (
     <div>
@@ -52,31 +125,7 @@ export default function Piles(props) {
         Piles:{" "}
       </Typography>
       {piles.map((pile, index) => (
-        <Draggable key={index}>
-          <div className={classes.root}>
-            <div className={classes.pile}>
-              <Chip
-                color="primary"
-                label={pile.name}
-                size="medium"
-                clickable={true}
-                onClick={onClick}
-              />
-              {showCards && <Button color="primary" onClick={shuffle(index)}>Shuffle</Button>}
-              {showCards && <Button color="primary">Show all</Button>}
-              {showCards && <Button color="primary">Hide all</Button>}
-            </div>
-            {props.cardSet != null && showCards && (
-              <CardPile
-                className={classes.pileCards}
-                images={pile.cards.map(
-                  i => cardSets[props.cardSet.index].images[i]
-                )}
-                recordChanges={false}
-              />
-            )}
-          </div>
-        </Draggable>
+        <Pile key={index} pile={pile} index={index} {...props} />
       ))}
     </div>
   );

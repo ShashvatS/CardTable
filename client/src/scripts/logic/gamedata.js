@@ -29,8 +29,6 @@ class GameData extends EventTarget {
         this.chatMessages = [];
 
         this.copyState = state => {
-            console.log(state);
-
             this.state = state;
             this.started = true;
             this.chatMessages = [];

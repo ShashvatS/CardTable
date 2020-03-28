@@ -61,7 +61,6 @@ export default class PlayArea extends React.Component {
 
   componentDidMount() {
     gamedata.addEventListener("new-pile", this.handleNewPile);
-    gamedata.addEventListener("startup-event", this.handleNewPile);
     gamedata.addEventListener("pile-form-change", this.pileFormChange);
     gamedata.addEventListener("card-set-change", this.cardSetChange);
     gamedata.addEventListener("shuffle", this.shuffle);
@@ -69,7 +68,6 @@ export default class PlayArea extends React.Component {
 
   componentWillUnmount() {
     gamedata.removeEventListener("new-pile", this.handleNewPile);
-    gamedata.removeEventListener("startup-event", this.handleNewPile);
     gamedata.removeEventListener("pile-form-change", this.pileFormChange);
     gamedata.removeEventListener("card-set-change", this.cardSetChange);
     gamedata.removeEventListener("shuffle", this.shuffle);

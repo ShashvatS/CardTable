@@ -32,20 +32,7 @@ function IndividualSelectPile(props) {
 
   useEffect(() => {
     propsmakeChange(cards);
-  }, [cards, propsmakeChange]);
-
-  function makeChange(i) {
-    return value => {
-      setCards(prev => {
-        let newState = {
-          ...prev,
-          [i]: value
-        };
-
-        return newState;
-      });
-    };
-  }
+  }, [cards]);
 
   if (
     props.cardSet == null ||
@@ -56,6 +43,23 @@ function IndividualSelectPile(props) {
   }
 
   const cardSet = cardSets[props.cardSet.index];
+
+  function makeChange(i) {
+    return value => {
+      if (cardSet != null && selectedSubset != -1) {
+        const key = cardSet.cardSubsetNums[selectedSubset][i];
+
+        setCards(prev => {
+          let newState = {
+            ...prev,
+            [key]: value
+          };
+
+          return newState;
+        });
+      }
+    };
+  }
 
   function changeSelectedSubset(event) {
     setSelectedSubset(event.target.value);
@@ -79,6 +83,7 @@ function IndividualSelectPile(props) {
         {selectedSubset !== -1 && (
           <CardPile
             recordChanges={true}
+            selectable={true}
             makeChange={makeChange}
             images={cardSet.cardSubSets[selectedSubset]}
           />
@@ -152,12 +157,11 @@ export default function PileForm(props) {
 
     let pile = [];
 
-    const cardSet = cardSets[props.cardSet.index];
-
     for (const key1 of Object.keys(cards)) {
-      for (const key2 of Object.keys(cards[key1])) {
-        if (cards[key1][key2]) {
-          pile.push(cardSet.images.indexOf(key2));
+      const isInSet = cards[key1];
+      for (const key2 of Object.keys(isInSet)) {
+        if (isInSet[key2]) {
+          pile.push(key2);
         }
       }
     }
@@ -191,12 +195,6 @@ export default function PileForm(props) {
     sendPile(pile);
   }
 
-  function onKeyPress(event) {
-    if (event.key === "Enter") {
-      makePile();
-    }
-  }
-
   function handleSwitch(event) {
     setAllowDuplicates(event.target.checked);
   }
@@ -213,7 +211,6 @@ export default function PileForm(props) {
           color="primary"
           inputProps={{ "aria-label": "description" }}
           onChange={textFieldChange}
-          onKeyPress={onKeyPress}
           value={pileName}
         />
         <FormControlLabel

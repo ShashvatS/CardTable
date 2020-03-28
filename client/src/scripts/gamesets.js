@@ -1,9 +1,10 @@
- class CardSet {
-    constructor(numCards, images, cardSubSets, cardSubSetLabels) {
+class CardSet {
+    constructor(numCards, images, cardSubSets, cardSubSetLabels, cardSubsetNums) {
         this.numCards = numCards;
         this.images = images;
         this.cardSubSets = cardSubSets;
         this.cardSubSetLabels = cardSubSetLabels;
+        this.cardSubsetNums = cardSubsetNums;
     }
 }
 
@@ -45,25 +46,39 @@ function makePlayingCardsSet() {
     }
 
     const numCards = 54;
+    const range = [];
     const images = [];
     for (let i = 0; i < numCards; i += 1) {
+        range.push(i);
         images.push(int2filename(i));
     }
 
     const groups = [
-        _filename => true,
-        filename => filename.includes("clubs"),
-        filename => filename.includes("diamonds"),
-        filename => filename.includes("hearts"),
-        filename => filename.includes("spades"),
-        filename => filename.includes("joker")
+        _image => true,
+        image => images[image].includes("clubs"),
+        image => images[image].includes("diamonds"),
+        image => images[image].includes("hearts"),
+        image => images[image].includes("spades"),
+        image => images[image].includes("joker")
     ];
 
-    const cardSubSets = groups.map(group => images.filter(group));
+
+    const cardSubSetNums = groups.map(group => range.filter(group));
+    const cardSubSets = cardSubSetNums.map(subset => subset.map(i => images[i]));
+
+    // const groups = [
+    //     _filename => true,
+    //     filename => filename.includes("clubs"),
+    //     filename => filename.includes("diamonds"),
+    //     filename => filename.includes("hearts"),
+    //     filename => filename.includes("spades"),
+    //     filename => filename.includes("joker")
+    // ];
+    // const cardSubSets = groups.map(group => images.filter(group));
 
     const cardSubSetLabels = ["All cards", "Clubs", "Diamonds", "Hearts", "Spades", "Jokers"];
 
-    return new CardSet(numCards, images, cardSubSets, cardSubSetLabels);
+    return new CardSet(numCards, images, cardSubSets, cardSubSetLabels, cardSubSetNums);
 }
 
 

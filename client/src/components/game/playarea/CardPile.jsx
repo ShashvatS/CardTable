@@ -15,18 +15,33 @@ const useStyles = makeStyles(theme => ({
 export default function CardPile(props) {
   const classes = useStyles();
 
-  const x = (value) => {
-      if (props.recordChanges) {
-          return props.makeChange(value);
-      } else {
-          return null;
-      }
+  const x = index => {
+    if (props.recordChanges) {
+      return props.makeChange(index);
+    } else {
+      return null;
+    }
+  };
+
+  const y = index => {
+    if (props.viewState == null) return null;
+    else return props.viewState[index];
   };
 
   return (
     <div className={classes.cardPile}>
       {props.images.map((value, index) => (
-        <Card {...props} makeChange={x(value)} className={classes.card} key={index} image={value} />
+        <Card
+          viewState={y(index)}
+          makeChange={x(index)}
+          className={classes.card}
+          key={index}
+          image={value}
+          drag={props.drag}
+          flippable={props.flippable}
+          recordChanges={props.recordChanges}
+          selectable={props.selectable}
+        />
       ))}
     </div>
   );

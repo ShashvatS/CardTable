@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import SvgIcon from "@material-ui/core/SvgIcon";
 import { Draggable } from "react-drag-and-drop";
 import { makeStyles } from "@material-ui/core/styles";
+import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -58,34 +59,70 @@ const successIcon = <CheckIcon style={iconStyles} />;
 export default function Card(props) {
   const classes = useStyles();
 
-  const [clicked, setClicked] = React.useState(false);
+  const recordChanges = props.recordChanges;
 
-  function onClick() {
-    if (props.selectable === true) return;
-    setClicked(!clicked);
+  let flip = props.flippable;
+  if (flip == null) {
+    flip = false;
   }
 
-  const recordChanges = props.recordChanges;
+  let selectable = props.selectable;
+  if (selectable == null) {
+    selectable = false;
+  }
+
+  const [clicked, setClicked] = React.useState(false);
+
+  const currentState = props.viewState;
+  useEffect(() => {
+    if (currentState == null) return;
+
+    setClicked(currentState);
+
+  }, [currentState]);
+
+  let visible = true;
+
+  if (flip && !clicked) {
+    visible = false;
+  }
+
+  let iconVisible = false;
+  if (selectable && clicked) {
+    iconVisible = true;
+  }
+
   const propsmakeChange = props.makeChange;
+
+  function onClick() {
+    setClicked(!clicked);
+  }
 
   useEffect(() => {
     if (recordChanges) {
       propsmakeChange(clicked);
     }
-  }, [clicked, propsmakeChange, recordChanges]);
+  }, [clicked, recordChanges]);
 
   let main = (
     <div className={classes.makeR}>
-      <img
-        className={classes.card}
-        src={props.image}
-        alt={props.image}
-        onClick={onClick}
-      />
-      {clicked && (
+      {visible && (
+        <img
+          className={classes.card}
+          src={props.image}
+          alt={props.image}
+          onClick={onClick}
+        />
+      )}
+      {iconVisible && (
         <div className={classes.overlay} onClick={onClick}>
           <div className={classes.icon}>{successIcon}</div>
         </div>
+      )}
+      {!visible && (
+        <Button color="primary" onClick={onClick}>
+          View card
+        </Button>
       )}
     </div>
   );
