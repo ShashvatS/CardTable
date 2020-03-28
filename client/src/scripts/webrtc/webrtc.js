@@ -16,7 +16,11 @@ export async function get_ice_servers() {
     let data = await response.json();
 
     if (data.success) {
-        iceServers = data.iceServers;
+        // iceServers = data.iceServers;
+        iceServers = {
+            iceServers: data.iceServers
+        };
+
         return iceServers;
     } else {
         console.log("Could not get ice servers");
@@ -51,6 +55,7 @@ export const connection = {
     },
 
     async setup_host(gameCode, usePrevState) {
+        console.log("here");
         if (this.hosted_before) {
             this.host_conn = new HostConnection();
             this.message_counter = 0
